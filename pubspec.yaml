@@ -1,0 +1,34 @@
+name: product_approval_dashboard
+description: kelem product approval dashbaord
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  firebase_core: ^1.3.0
+  cloud_firestore: ^2.3.0
+  fluttertoast: ^8.0.7
+  firebase_storage: ^9.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/logo.png
+
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Bold.ttf
+          weight: 700

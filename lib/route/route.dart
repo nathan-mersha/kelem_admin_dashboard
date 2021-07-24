@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:product_approval_dashboard/page/home.dart';
 import 'package:product_approval_dashboard/page/product_approval.dart';
 
 class RouteTo {
@@ -6,14 +7,16 @@ class RouteTo {
   static const String ROOT = "/";
 
   // Info pages
-  static const String PRODUCT_APPROVAL = "/product/approval";
+  static const String HOME = "/home";
+  static const String LOGIN = "/login";
 
   var routes;
   RouteTo() {
     routes = {
       /// Info pages
-      ROOT: (BuildContext context) => ProductApprovalPage(),
-      PRODUCT_APPROVAL: (BuildContext context) => ProductApprovalPage()
+      ROOT: (BuildContext context) => HomePage(),
+      LOGIN: (BuildContext context) => HomePage(),
+      HOME: (BuildContext context) => HomePage(),
     };
   }
 }

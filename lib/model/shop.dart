@@ -68,15 +68,14 @@ class Shop {
       this.category = Shop.UN_AVAILABLE,
       this.logo = Shop.UN_AVAILABLE,
       required this.firstModified,
-      required this.lastModified
-      });
+      required this.lastModified});
 
   /// Converts Model to Map
   static Map<String, dynamic> toMap(Shop shop) {
     return {
       ID: shop.id,
-      TELEGRAM_CHANNEL_ID : shop.telegramChannelId,
-      TELEGRAM_CHANNEL_LINK : shop.telegramChannelLink,
+      TELEGRAM_CHANNEL_ID: shop.telegramChannelId,
+      TELEGRAM_CHANNEL_LINK: shop.telegramChannelLink,
       SHOP_ID: shop.shopId,
       USER_ID: shop.userId,
       NAME: shop.name,
@@ -101,7 +100,7 @@ class Shop {
   static Shop toModel(Map<String, dynamic> map) {
     try {
       return Shop(
-        id : map[ID],
+          id: map[ID],
           telegramChannelId: map[TELEGRAM_CHANNEL_ID],
           telegramChannelLink: map[TELEGRAM_CHANNEL_LINK],
           shopId: map[SHOP_ID],

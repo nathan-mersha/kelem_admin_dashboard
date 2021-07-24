@@ -3,6 +3,7 @@ import 'package:product_approval_dashboard/model/shop.dart';
 /// Defines product model
 class Product {
   /// Defines key values to extract from a map
+  static const String UN_AVAILABLE = "un-available";
 
   static const String COLLECTION_NAME = "product";
 
@@ -15,6 +16,7 @@ class Product {
   static const String APPROVED = "approved";
 
   static const String NAME = "name";
+  static const String KEYWORDS = "keywords";
   static const String CATEGORY = "category";
   static const String SUB_CATEGORY = "subCategory";
   static const String AUTHOR_OR_MANUFACTURER = "authorOrManufacturer";
@@ -40,6 +42,7 @@ class Product {
   String telegramRawPost;
   bool approved;
   String name;
+  List<dynamic> keywords;
   String category;
   String subCategory;
   String authorOrManufacturer;
@@ -60,46 +63,43 @@ class Product {
   DateTime firstModified;
   DateTime lastModified;
 
-
   Product(
-      {
-        this.productId = "un-available",
-        this.telegramShopId = "un-available",
-        this.telegramPostId = "un-available",
-        this.telegramRawPost = "un-available",
-        this.approved = false,
-      this.name = "un-available",
-      this.category="un-available",
-      this.subCategory="un-available",
-      this.authorOrManufacturer="un-available",
-      this.price=0,
-      this.regularPrice=0,
-      this.tag=const [],
+      {this.productId = UN_AVAILABLE,
+      this.telegramShopId = UN_AVAILABLE,
+      this.telegramPostId = UN_AVAILABLE,
+      this.telegramRawPost = UN_AVAILABLE,
+      this.approved = false,
+      this.name = UN_AVAILABLE,
+      this.keywords = const [],
+      this.category = UN_AVAILABLE,
+      this.subCategory = UN_AVAILABLE,
+      this.authorOrManufacturer = UN_AVAILABLE,
+      this.price = 0,
+      this.regularPrice = 0,
+      this.tag = const [],
       this.quantity = "1",
-      this.description="un-available",
-      this.rating=0,
-      this.reference="un-available",
-      this.availableStock=0,
-      this.image=const [],
-      this.deliverable=false,
+      this.description = UN_AVAILABLE,
+      this.rating = 0,
+      this.reference = UN_AVAILABLE,
+      this.availableStock = 0,
+      this.image = const [],
+      this.deliverable = false,
       this.metaData,
-      this.publishedStatus="un-available",
+      this.publishedStatus = UN_AVAILABLE,
       required this.shop,
       required this.firstModified,
-      required this.lastModified
-
-      });
+      required this.lastModified});
 
   /// Converts Model to Map
   static Map<String, dynamic> toMap(Product product) {
-
     return {
       PRODUCT_ID: product.productId,
-      TELEGRAM_SHOP_ID : product.telegramShopId,
-      TELEGRAM_POST_ID : product.telegramPostId,
-      TELEGRAM_RAW_POST : product.telegramRawPost,
-      APPROVED :  product.approved,
+      TELEGRAM_SHOP_ID: product.telegramShopId,
+      TELEGRAM_POST_ID: product.telegramPostId,
+      TELEGRAM_RAW_POST: product.telegramRawPost,
+      APPROVED: product.approved,
       NAME: product.name,
+      KEYWORDS: product.keywords,
       CATEGORY: product.category,
       SUB_CATEGORY: product.subCategory,
       AUTHOR_OR_MANUFACTURER: product.authorOrManufacturer,
@@ -114,7 +114,7 @@ class Product {
       DELIVERABLE: product.deliverable,
       META_DATA: product.metaData,
       PUBLISHED_STATUS: product.publishedStatus,
-      SHOP:  Shop.toMap(product.shop),
+      SHOP: Shop.toMap(product.shop),
       FIRST_MODIFIED: product.firstModified.toIso8601String(),
       LAST_MODIFIED: product.lastModified.toIso8601String()
     };
@@ -122,17 +122,15 @@ class Product {
 
   /// Converts Map to Model
   static Product toModel(dynamic map) {
-
-
     try {
       return Product(
           telegramPostId: map[TELEGRAM_POST_ID].toString(),
           telegramShopId: map[TELEGRAM_SHOP_ID].toString(),
           telegramRawPost: map[TELEGRAM_RAW_POST].toString(),
           approved: map[APPROVED],
-
           productId: map[PRODUCT_ID].toString(),
           name: map[NAME].toString(),
+          keywords: map[KEYWORDS],
           category: map[CATEGORY].toString(),
           subCategory: map[SUB_CATEGORY].toString(),
           authorOrManufacturer: map[AUTHOR_OR_MANUFACTURER].toString(),
@@ -148,16 +146,14 @@ class Product {
           metaData: map[META_DATA],
           publishedStatus: map[PUBLISHED_STATUS].toString(),
           shop: map[SHOP] == null ? Shop(firstModified: DateTime.now(), lastModified: DateTime.now()) : Shop.toModel(map[SHOP]),
-          firstModified: DateTime.parse(
-              map[FIRST_MODIFIED] ?? DateTime.now().toIso8601String()),
-          lastModified: DateTime.parse(
-              map[LAST_MODIFIED] ?? DateTime.now().toIso8601String()));
+          firstModified: DateTime.parse(map[FIRST_MODIFIED] ?? DateTime.now().toIso8601String()),
+          lastModified: DateTime.parse(map[LAST_MODIFIED] ?? DateTime.now().toIso8601String()));
     } catch (e) {
       print(e);
       return Product(
         firstModified: DateTime.now(),
-          lastModified: DateTime.now(),
-          shop: Shop(firstModified: DateTime.now(), lastModified: DateTime.now()),
+        lastModified: DateTime.now(),
+        shop: Shop(firstModified: DateTime.now(), lastModified: DateTime.now()),
       );
     }
   }

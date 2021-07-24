@@ -16,7 +16,13 @@ dependencies:
   firebase_core: ^1.3.0
   cloud_firestore: ^2.3.0
   fluttertoast: ^8.0.7
-  firebase_storage: ^9.0.0
+  firebase_storage: ^10.0.0
+  flutter_spinkit: ^5.0.0
+  uuid: ^3.0.4
+  image_picker_web: ^2.0.3
+  firebase: ^9.0.1
+  mime_type: ^1.0.0
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
@@ -26,9 +32,12 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/logo.png
+    - assets/images/working.png
+    - assets/images/no_data_found.png
+    - assets/images/image_folder.png
 
   fonts:
-    - family: Nunito
+    - family: Montserrat
       fonts:
-        - asset: assets/fonts/Nunito-Bold.ttf
-          weight: 700
+        - asset: assets/fonts/Montserrat-Regular.ttf
+

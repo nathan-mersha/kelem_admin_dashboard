@@ -52,6 +52,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(DateTime.now().toIso8601String());
     return Scaffold(
       body: Container(
           color: Colors.black12.withOpacity(0.05),

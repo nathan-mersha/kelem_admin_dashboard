@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:product_approval_dashboard/model/global.dart';
 import 'package:product_approval_dashboard/model/product.dart';
 import 'package:product_approval_dashboard/model/shop.dart';
 import 'package:uuid/uuid.dart';
@@ -15,7 +15,6 @@ class FbProductAPI {
       });
     });
 
-    print("un approved products count : ${unApprovedProducts.length}");
     return unApprovedProducts;
   }
 
@@ -50,17 +49,12 @@ class FbShopAPI {
     List<Shop> shops = [];
     await FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).get().then((QuerySnapshot<Map<String, dynamic>> value) {
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
-        print(element.data());
         Shop shop = Shop.toModel(element.data());
         shops.add(shop);
       });
     });
 
     return shops;
-  }
-
-  Future getGlobalConfig() async {
-    return FirebaseFirestore.instance.collection("globalConfig").doc("snlopoku8ggZD0x7ZDX8").get();
   }
 
   Future updateShop(Shop shop) {
@@ -71,5 +65,33 @@ class FbShopAPI {
     FirebaseStorage storage = FirebaseStorage.instance;
     storage.ref(shop.logo).delete();
     return FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).doc(shop.shopId).delete();
+  }
+}
+
+class FbGlobalConfigAPI {
+  static const String CONFIG_ID = "snlopoku8ggZD0x7ZDX8";
+
+  Future<GlobalConfig> get() async {
+    return FirebaseFirestore.instance.collection("globalConfig").doc(CONFIG_ID).get().then((DocumentSnapshot value) {
+      dynamic data = value.data();
+
+      AdditionalFee additionalFee = AdditionalFee.toModel(data[GlobalConfig.ADDITIONAL_FEE]);
+      List<SubscriptionPackage> subscriptionPackages = SubscriptionPackage.toModelList(data[GlobalConfig.SUBSCRIPTION_PACKAGES]);
+      FeaturesConfig featuresConfig = FeaturesConfig.toModel(data[GlobalConfig.FEATURES_CONFIG]);
+      List<BankConfig> bankConfigs = BankConfig.toModelList(data[GlobalConfig.BANK_CONFIG]);
+      List<Category> categories = Category.toModelList(data[GlobalConfig.CATEGORIES]);
+
+      GlobalConfig globalConfig = GlobalConfig(
+          globalConfigId: CONFIG_ID,
+          additionalFee: additionalFee,
+          subscriptionPackages: subscriptionPackages,
+          featuresConfig: featuresConfig,
+          bankConfigs: bankConfigs,
+          categories: categories,
+          firstModified: DateTime.parse(data[GlobalConfig.FIRST_MODIFIED]),
+          lastModified: DateTime.parse(data[GlobalConfig.LAST_MODIFIED]));
+
+      return globalConfig;
+    });
   }
 }

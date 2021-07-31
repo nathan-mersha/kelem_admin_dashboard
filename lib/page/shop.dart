@@ -7,6 +7,7 @@ import 'package:image_picker_web/image_picker_web.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:path/path.dart' as p;
 import 'package:product_approval_dashboard/api/firebase_api.dart';
+import 'package:product_approval_dashboard/model/global.dart';
 import 'package:product_approval_dashboard/model/shop.dart';
 import 'package:product_approval_dashboard/widget/loading.dart';
 import 'package:product_approval_dashboard/widget/stat_card.dart';
@@ -29,6 +30,8 @@ class _ShopPageState extends State<ShopPage> {
   String mode = MODE_CREATE;
 
   FbShopAPI firebaseAPI = FbShopAPI();
+  FbGlobalConfigAPI fbGlobalConfigAPI = FbGlobalConfigAPI();
+
   TextEditingController _nameController = TextEditingController(); // r
   TextEditingController _primaryPhoneController = TextEditingController(); // r
   TextEditingController _secondaryPhoneController = TextEditingController();
@@ -140,23 +143,28 @@ class _ShopPageState extends State<ShopPage> {
     List<String> categoriesData = [];
     List<String> subscriptionPackagesData = [];
 
-    await firebaseAPI.getGlobalConfig().then((dynamic value) {
-      dynamic config = value.data();
+    await fbGlobalConfigAPI.get().then((GlobalConfig value) {
 
       // extracting categories data
-      List categoriesConfig = config["categories"];
-      categoriesConfig.forEach((element) {
-        categoriesData.add(element["name"]);
+      List<Category> categoriesConfig = value.categories;
+
+      categoriesConfig.forEach((Category element) {
+        categoriesData.add(element.name);
       });
+
       categoriesData.add(Shop.UN_AVAILABLE);
 
       // extracting subscription package data
-      List subscriptionPackageConfig = config["subscriptionPackages"];
-      subscriptionPackageConfig.forEach((element) {
-        subscriptionPackagesData.add(element["name"]);
-      });
+      // List<SubscriptionPackage> subscriptionPackageConfig = value.subscriptionPackages;
+      //
+      // subscriptionPackageConfig.forEach((SubscriptionPackage element) {
+      //   subscriptionPackagesData.add(element.name);
+      // });
+
       subscriptionPackagesData.add(Shop.UN_AVAILABLE);
     });
+
+
 
     setState(() {
       shops = data;

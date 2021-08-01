@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:product_approval_dashboard/page/SyncReportPage.dart';
 import 'package:product_approval_dashboard/page/product_approval.dart';
 import 'package:product_approval_dashboard/page/settings.dart';
 import 'package:product_approval_dashboard/page/shop.dart';
@@ -32,6 +33,11 @@ class _HomePageState extends State<HomePage> {
       CHILD: ShopPage(),
     },
     {
+      NAME: "Sync report",
+      ICON_DATA: Icons.sync_sharp,
+      CHILD: SyncReportPage(),
+    },
+    {
       NAME: "User", // User
       ICON_DATA: Icons.account_circle_outlined,
       CHILD: UserPage(),
@@ -48,11 +54,10 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  int selectedMenuIndex = 2; // set to product approval page (default)
+  int selectedMenuIndex = 3; // set to product approval page (default)
 
   @override
   Widget build(BuildContext context) {
-    print(DateTime.now().toIso8601String());
     return Scaffold(
       body: Container(
           color: Colors.black12.withOpacity(0.05),

@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:product_approval_dashboard/model/global.dart';
 import 'package:product_approval_dashboard/model/product.dart';
 import 'package:product_approval_dashboard/model/shop.dart';
+import 'package:product_approval_dashboard/model/sync_report.dart';
 import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 class FbProductAPI {
   Future<List<Product>> getUnApprovedProducts() async {
@@ -92,6 +97,31 @@ class FbGlobalConfigAPI {
           lastModified: DateTime.parse(data[GlobalConfig.LAST_MODIFIED]));
 
       return globalConfig;
+    });
+  }
+}
+
+class SyncShopsAPI {
+  static const url = "http://178.62.83.84";
+
+  Future<List<SyncReportModel>> getSync() {
+    String syncUrl = "$url/sync_reports";
+
+    return http.get(Uri.parse(syncUrl), headers: {"Content-Type": "application/json"}).then((http.Response response) {
+      print(response.body);
+      dynamic responseBody = jsonDecode(response.body);
+
+      print(responseBody);
+      List<SyncReportModel> reports = [];
+
+      responseBody.forEach((element) {
+        SyncReportModel report = SyncReportModel.toModel(element);
+        reports.add(report);
+      });
+      return reports;
+    }, onError: (err) {
+      print(err);
+      return [];
     });
   }
 }

@@ -1,6 +1,5 @@
-
 /// Defines globalConfig model
-class GlobalConfig  {
+class GlobalConfig {
   static const String COLLECTION_NAME = "globalConfig";
 
   /// Defines key values to extract from a map
@@ -33,7 +32,6 @@ class GlobalConfig  {
     required this.lastModified,
   });
 
-
   /// Converts Model to Map
   static Map<String, dynamic> toMap(GlobalConfig globalConfig) {
     return {
@@ -41,7 +39,7 @@ class GlobalConfig  {
       ADDITIONAL_FEE: AdditionalFee.toMap(globalConfig.additionalFee),
       SUBSCRIPTION_PACKAGES: SubscriptionPackage.toMapList(globalConfig.subscriptionPackages),
       FEATURES_CONFIG: FeaturesConfig.toMap(globalConfig.featuresConfig),
-      BANK_CONFIG:BankConfig.toMapList(globalConfig.bankConfigs),
+      BANK_CONFIG: BankConfig.toMapList(globalConfig.bankConfigs),
       CATEGORIES: Category.toMapList(globalConfig.categories),
       FIRST_MODIFIED: globalConfig.firstModified,
       LAST_MODIFIED: globalConfig.lastModified
@@ -58,9 +56,7 @@ class GlobalConfig  {
         bankConfigs: BankConfig.toModelList(map[BANK_CONFIG]),
         categories: Category.toModelList(map[CATEGORIES]),
         firstModified: DateTime.parse(map[FIRST_MODIFIED]),
-        lastModified: DateTime.parse(map[LAST_MODIFIED])
-
-    );
+        lastModified: DateTime.parse(map[LAST_MODIFIED]));
   }
 
   /// Changes List of Map to List of Model
@@ -91,23 +87,19 @@ class AdditionalFee {
   static const String DELIVERY_FEE_TYPE = "deliveryFeeType"; // Defines calculation type for delivery fee type, km or flat rate
   static const String DELIVERY_FEE_VALUE = "deliveryFeeValue";
 
-
   String transactionFeeType;
   num transactionFeeValue;
   num taxFeeValue;
   String deliveryFeeType;
   num deliveryFeeValue;
 
-
-  AdditionalFee(
-      {
-        required this.transactionFeeType,
-        required this.transactionFeeValue,
-        required this.taxFeeValue,
-        required this.deliveryFeeType,
-        required this.deliveryFeeValue,
-
-      });
+  AdditionalFee({
+    required this.transactionFeeType,
+    required this.transactionFeeValue,
+    required this.taxFeeValue,
+    required this.deliveryFeeType,
+    required this.deliveryFeeValue,
+  });
 
   /// Converts Model to Map
   static Map<String, dynamic> toMap(AdditionalFee additionalFee) {
@@ -123,11 +115,11 @@ class AdditionalFee {
   /// Converts Map to Model
   static AdditionalFee toModel(Map<String, dynamic> map) {
     return AdditionalFee(
-        transactionFeeType: map[TRANSACTION_FEE_TYPE],
-        transactionFeeValue: map[TRANSACTION_FEE_VALUE],
-        taxFeeValue: map[TAX_FEE_VALUE],
-        deliveryFeeType: map[DELIVERY_FEE_TYPE],
-        deliveryFeeValue: map[DELIVERY_FEE_VALUE],
+      transactionFeeType: map[TRANSACTION_FEE_TYPE],
+      transactionFeeValue: map[TRANSACTION_FEE_VALUE],
+      taxFeeValue: map[TAX_FEE_VALUE],
+      deliveryFeeType: map[DELIVERY_FEE_TYPE],
+      deliveryFeeValue: map[DELIVERY_FEE_VALUE],
     );
   }
 
@@ -158,21 +150,17 @@ class SubscriptionPackage {
   static const String MONTHLY_PRICE = "monthlyPrice";
   static const String YEARLY_PRICE = "yearlyPrice";
 
-
   String name;
   List<dynamic> features;
   num monthlyPrice;
   num yearlyPrice;
 
-
-  SubscriptionPackage(
-      {
-        required this.name,
-        required this.features,
-        required this.monthlyPrice,
-        required this.yearlyPrice,
-
-      });
+  SubscriptionPackage({
+    required this.name,
+    required this.features,
+    required this.monthlyPrice,
+    required this.yearlyPrice,
+  });
 
   /// Converts Model to Map
   static Map<String, dynamic> toMap(SubscriptionPackage subscriptionPackage) {
@@ -181,17 +169,16 @@ class SubscriptionPackage {
       FEATURES: subscriptionPackage.features,
       MONTHLY_PRICE: subscriptionPackage.monthlyPrice,
       YEARLY_PRICE: subscriptionPackage.yearlyPrice,
-
     };
   }
 
   /// Converts Map to Model
   static SubscriptionPackage toModel(dynamic map) {
     return SubscriptionPackage(
-        name: map[NAME],
-        features: map[FEATURES],
-        monthlyPrice: map[MONTHLY_PRICE],
-        yearlyPrice: map[YEARLY_PRICE],
+      name: map[NAME],
+      features: map[FEATURES],
+      monthlyPrice: map[MONTHLY_PRICE],
+      yearlyPrice: map[YEARLY_PRICE],
     );
   }
 
@@ -205,8 +192,7 @@ class SubscriptionPackage {
   }
 
   /// Changes List of Model to List of Map
-  static List<Map<String, dynamic>> toMapList(
-      List<SubscriptionPackage> models) {
+  static List<Map<String, dynamic>> toMapList(List<SubscriptionPackage> models) {
     List<Map<String, dynamic>> mapList = [];
     models.forEach((SubscriptionPackage model) {
       mapList.add(toMap(model));
@@ -256,30 +242,26 @@ class FeaturesConfig {
   bool tin;
   List<dynamic> cashOutSupportBanks;
 
-
-  FeaturesConfig(
-      {
-
-        required this.buyCredit,
-        required this.wallet,
-        required this.transactions,
-        required this.shop,
-        required this.wishList,
-        required this.news,
-        required this.aboutUs,
-        required this.order,
-        required this.forceNewsOnHome,
-        required this.bestSellers,
-        required this.cashOut,
-        required this.shopDetail,
-        required this.shopInformation,
-        required this.paymentMethodCashOnDelivery,
-        required this.paymentMethodKelemWallet,
-        required this.paymentMethodHisabWallet,
-        required this.cashOutSupportBanks,
-        required this.tin,
-
-      });
+  FeaturesConfig({
+    required this.buyCredit,
+    required this.wallet,
+    required this.transactions,
+    required this.shop,
+    required this.wishList,
+    required this.news,
+    required this.aboutUs,
+    required this.order,
+    required this.forceNewsOnHome,
+    required this.bestSellers,
+    required this.cashOut,
+    required this.shopDetail,
+    required this.shopInformation,
+    required this.paymentMethodCashOnDelivery,
+    required this.paymentMethodKelemWallet,
+    required this.paymentMethodHisabWallet,
+    required this.cashOutSupportBanks,
+    required this.tin,
+  });
 
   /// Converts Model to Map
   static Map<String, dynamic> toMap(FeaturesConfig featuresConfig) {
@@ -297,37 +279,36 @@ class FeaturesConfig {
       CASH_OUT: featuresConfig.cashOut,
       SHOP_DETAIL: featuresConfig.shopDetail,
       SHOP_INFORMATION: featuresConfig.shopInformation,
-      PAYMENT_METHOD_CASH_ON_DELIVERY:
-      featuresConfig.paymentMethodCashOnDelivery,
+      PAYMENT_METHOD_CASH_ON_DELIVERY: featuresConfig.paymentMethodCashOnDelivery,
       PAYMENT_METHOD_KELEM_WALLET: featuresConfig.paymentMethodKelemWallet,
       PAYMENT_METHOD_HISAB_WALLET: featuresConfig.paymentMethodHisabWallet,
       CASH_OUT_SUPPORT_BANKS: featuresConfig.cashOutSupportBanks,
       TIN: featuresConfig.tin,
-
     };
   }
 
   /// Converts Map to Model
   static FeaturesConfig toModel(Map<String, dynamic> map) {
     return FeaturesConfig(
-        buyCredit: map[BUY_CREDIT],
-        wallet: map[WALLET],
-        transactions: map[TRANSACTIONS],
-        shop: map[SHOP],
-        wishList: map[WISH_LIST],
-        news: map[NEWS],
-        aboutUs: map[ABOUT_US],
-        order: map[ORDER],
-        forceNewsOnHome: map[FORCE_NEWS_ON_HOME],
-        bestSellers: map[BEST_SELLERS],
-        cashOut: map[CASH_OUT],
-        shopDetail: map[SHOP_DETAIL],
-        shopInformation: map[SHOP_INFORMATION],
-        paymentMethodCashOnDelivery: map[PAYMENT_METHOD_CASH_ON_DELIVERY],
-        paymentMethodKelemWallet: map[PAYMENT_METHOD_KELEM_WALLET],
-        paymentMethodHisabWallet: map[PAYMENT_METHOD_HISAB_WALLET],
-        cashOutSupportBanks: map[CASH_OUT_SUPPORT_BANKS],
-        tin: map[TIN],);
+      buyCredit: map[BUY_CREDIT],
+      wallet: map[WALLET],
+      transactions: map[TRANSACTIONS],
+      shop: map[SHOP],
+      wishList: map[WISH_LIST],
+      news: map[NEWS],
+      aboutUs: map[ABOUT_US],
+      order: map[ORDER],
+      forceNewsOnHome: map[FORCE_NEWS_ON_HOME],
+      bestSellers: map[BEST_SELLERS],
+      cashOut: map[CASH_OUT],
+      shopDetail: map[SHOP_DETAIL],
+      shopInformation: map[SHOP_INFORMATION],
+      paymentMethodCashOnDelivery: map[PAYMENT_METHOD_CASH_ON_DELIVERY],
+      paymentMethodKelemWallet: map[PAYMENT_METHOD_KELEM_WALLET],
+      paymentMethodHisabWallet: map[PAYMENT_METHOD_HISAB_WALLET],
+      cashOutSupportBanks: map[CASH_OUT_SUPPORT_BANKS],
+      tin: map[TIN],
+    );
   }
 
   /// Changes List of Map to List of Model
@@ -356,18 +337,15 @@ class BankConfig {
   static const String DEPOSIT_TO_DIALLING_PATTERN = "depositToDiallingPattern";
   static const String KELEM_BANK_ACCOUNT = "kelemBankAccount";
 
-
   String bankName;
   String depositToDiallingPattern;
   String kelemBankAccount;
 
-
-  BankConfig(
-      {
-        required this.bankName,
-        required this.depositToDiallingPattern,
-        required this.kelemBankAccount,
-      });
+  BankConfig({
+    required this.bankName,
+    required this.depositToDiallingPattern,
+    required this.kelemBankAccount,
+  });
 
   /// Converts Model to Map
   static Map<String, dynamic> toMap(BankConfig bankConfig) {
@@ -380,13 +358,10 @@ class BankConfig {
 
   /// Converts Map to Model
   static BankConfig toModel(Map<String, dynamic> map) {
-
-
-
     return BankConfig(
-        bankName: map[BANK_NAME],
-        depositToDiallingPattern: map[DEPOSIT_TO_DIALLING_PATTERN],
-        kelemBankAccount: map[KELEM_BANK_ACCOUNT],
+      bankName: map[BANK_NAME],
+      depositToDiallingPattern: map[DEPOSIT_TO_DIALLING_PATTERN],
+      kelemBankAccount: map[KELEM_BANK_ACCOUNT],
     );
   }
 
@@ -416,20 +391,16 @@ class Category {
   static const String ICON = "icon";
   static const String SUB_CATEGORIES = "subCategories";
 
-
   String name;
   String icon;
   List<dynamic> subCategories;
 
-
   /// Category constructor
-  Category(
-      {
-        required this.name,
-        required this.icon,
-        required this.subCategories,
-
-      });
+  Category({
+    required this.name,
+    required this.icon,
+    required this.subCategories,
+  });
 
   /// Converts Model to Map
   static Map<String, dynamic> toMap(Category category) {
@@ -437,17 +408,15 @@ class Category {
       NAME: category.name,
       ICON: category.icon,
       SUB_CATEGORIES: category.subCategories,
-
     };
   }
 
   /// Converts Map to Model
   static Category toModel(dynamic map) {
     return Category(
-        name: map[NAME],
-        icon: map[ICON],
-        subCategories: map[SUB_CATEGORIES],
-
+      name: map[NAME],
+      icon: map[ICON] == null ? "some icon" : map[ICON],
+      subCategories: map[SUB_CATEGORIES],
     );
   }
 

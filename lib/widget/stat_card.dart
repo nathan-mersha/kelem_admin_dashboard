@@ -23,14 +23,14 @@ class StatCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  Expanded(child: Text(
                     title,
                     style: TextStyle(color: Colors.black38, fontSize: 12),
-                  ),
+                  ),),
                   icon
                 ],
               ),
-              Text(stat.toString(), style: TextStyle(fontSize: 24, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w800)),
+              Text(stat.toString(), style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w800)),
               Expanded(child: Container()),
               Text(
                 description,

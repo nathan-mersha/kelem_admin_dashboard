@@ -155,11 +155,11 @@ class _ShopPageState extends State<ShopPage> {
       categoriesData.add(Shop.UN_AVAILABLE);
 
       // extracting subscription package data
-      // List<SubscriptionPackage> subscriptionPackageConfig = value.subscriptionPackages;
-      //
-      // subscriptionPackageConfig.forEach((SubscriptionPackage element) {
-      //   subscriptionPackagesData.add(element.name);
-      // });
+      List<SubscriptionPackage> subscriptionPackageConfig = value.subscriptionPackages;
+
+      subscriptionPackageConfig.forEach((SubscriptionPackage element) {
+        subscriptionPackagesData.add(element.name);
+      });
 
       subscriptionPackagesData.add(Shop.UN_AVAILABLE);
     });

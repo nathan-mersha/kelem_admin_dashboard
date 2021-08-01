@@ -91,13 +91,35 @@ class Shop {
       DESCRIPTION: shop.description,
       CATEGORY: shop.category,
       LOGO: shop.logo,
-      FIRST_MODIFIED: shop.lastModified.toIso8601String(),
+      FIRST_MODIFIED: shop.firstModified.toIso8601String(),
       LAST_MODIFIED: shop.lastModified.toIso8601String()
     };
   }
 
   /// Converts Map to Model
   static Shop toModel(Map<String, dynamic> map) {
+
+    print("---------------------------------- ");
+    print(map[ID]);
+    print(map[TELEGRAM_CHANNEL_ID]);
+    print(map[TELEGRAM_CHANNEL_LINK]);
+    print(map[SHOP_ID]);
+    print(map[USER_ID]);
+    print(map[NAME]);
+    print(map[PRIMARY_PHONE]);
+    print(map[SECONDARY_PHONE]);
+    print(map[EMAIL]);
+    print(map[WEBSITE]);
+    print(map[PHYSICAL_ADDRESS]);
+    print(map[CO_ORDINATES]);
+    print(map[IS_VIRTUAL]);
+    print(map[IS_VERIFIED]);
+    print(map[SUBSCRIPTION_PACKAGE]);
+    print(map[DESCRIPTION]);
+    print(map[CATEGORY]);
+    print(map[LOGO]);
+    print(map[FIRST_MODIFIED]);
+    print(map[LAST_MODIFIED]);
     try {
       return Shop(
           id: map[ID],

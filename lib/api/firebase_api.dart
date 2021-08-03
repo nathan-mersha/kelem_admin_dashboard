@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:product_approval_dashboard/model/global.dart';
 import 'package:product_approval_dashboard/model/product.dart';
 import 'package:product_approval_dashboard/model/shop.dart';
@@ -102,16 +101,14 @@ class FbGlobalConfigAPI {
 }
 
 class SyncShopsAPI {
-  static const url = "http://178.62.83.84";
+  static const url = "https://kelem.et";
 
   Future<List<SyncReportModel>> getSync() {
-    String syncUrl = "$url/sync_reports";
+    String syncUrl = "$url/server/sync_reports";
 
     return http.get(Uri.parse(syncUrl), headers: {"Content-Type": "application/json"}).then((http.Response response) {
-      print(response.body);
       dynamic responseBody = jsonDecode(response.body);
 
-      print(responseBody);
       List<SyncReportModel> reports = [];
 
       responseBody.forEach((element) {

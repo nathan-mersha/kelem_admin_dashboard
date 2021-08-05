@@ -35,6 +35,25 @@ class FbProductAPI {
 
     return FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).doc(product.productId).delete();
   }
+
+  Future deleteProductsOfShop(Shop shop, String deleteType) async {
+    late QuerySnapshot<Map<String, dynamic>> snapshot;
+
+    if (deleteType == Product.ALL) {
+      snapshot = await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where("${Product.SHOP}.${Shop.SHOP_ID}", isEqualTo: shop.shopId).get();
+    } else {
+      snapshot = await FirebaseFirestore.instance
+          .collection(Product.COLLECTION_NAME)
+          .where("${Product.SHOP}.${Shop.SHOP_ID}", isEqualTo: shop.shopId)
+          .where(Product.APPROVED, isEqualTo: deleteType == Product.APPROVED ? true : false)
+          .get();
+    }
+
+    for (var doc in snapshot.docs) {
+      Product product = Product.toModel(doc.data());
+      deleteProduct(product);
+    }
+  }
 }
 
 class FbShopAPI {

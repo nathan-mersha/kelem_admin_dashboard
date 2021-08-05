@@ -14,6 +14,8 @@ class Product {
   static const String TELEGRAM_RAW_POST = "telegramRawPost";
 
   static const String APPROVED = "approved";
+  static const String UN_APPROVED = "un-approved"; // note : used in deleting products as an enum, not used in map
+  static const String ALL = "all"; // note : used in deleting products as an enum, not used in map
 
   static const String NAME = "name";
   static const String KEYWORDS = "keywords";

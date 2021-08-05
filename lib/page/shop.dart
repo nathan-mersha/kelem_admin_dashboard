@@ -8,6 +8,7 @@ import 'package:mime_type/mime_type.dart';
 import 'package:path/path.dart' as p;
 import 'package:product_approval_dashboard/api/firebase_api.dart';
 import 'package:product_approval_dashboard/model/global.dart';
+import 'package:product_approval_dashboard/model/product.dart';
 import 'package:product_approval_dashboard/model/shop.dart';
 import 'package:product_approval_dashboard/widget/loading.dart';
 import 'package:product_approval_dashboard/widget/stat_card.dart';
@@ -30,6 +31,7 @@ class _ShopPageState extends State<ShopPage> {
   String mode = MODE_CREATE;
 
   FbShopAPI firebaseAPI = FbShopAPI();
+  FbProductAPI fbProductAPI = FbProductAPI();
   FbGlobalConfigAPI fbGlobalConfigAPI = FbGlobalConfigAPI();
 
   TextEditingController _nameController = TextEditingController(); // r
@@ -357,6 +359,41 @@ class _ShopPageState extends State<ShopPage> {
                 )
               ],
             ),
+            mode == MODE_UPDATE ? AbsorbPointer(absorbing: busy,child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+
+              IconButton(
+                  onPressed: () {
+                    onDeleteProductsOfShop(selectedShop,Product.UN_APPROVED);
+                  },
+                  tooltip: "delete un-approved products",
+                  icon: Icon(
+                    Icons.auto_delete_outlined,
+                    color: Colors.orange,
+                  )),
+
+              IconButton(
+                  onPressed: () {
+                    onDeleteProductsOfShop(selectedShop,Product.APPROVED);
+                  },
+                  tooltip: "delete approved products",
+                  icon: Icon(
+                    Icons.delete_sweep_outlined,
+                    color: Color(0xff9299cd)
+                  )),
+
+              IconButton(
+                  onPressed: () {
+                    onDeleteProductsOfShop(selectedShop,Product.ALL);
+                  },
+                  tooltip: "delete all products",
+                  icon: Icon(
+                    Icons.delete_outline_rounded,
+                    color: Color(0xffe77681)
+                  )),
+
+            ],) ,): Container(),
             SizedBox(
               height: 20,
             ),
@@ -769,6 +806,82 @@ class _ShopPageState extends State<ShopPage> {
             ),
           );
         });
+  }
+
+  void onDeleteProductsOfShop(Shop shop, String deleteType) async{
+
+    await showGeneralDialog(
+        context: context,
+        // context: context,
+        barrierDismissible: true,
+        barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierColor: Colors.black45,
+        transitionDuration: const Duration(milliseconds: 200),
+        pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+          return Center(
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(18))),
+              child: Container(
+                // width: MediaQuery.of(context).size.width - 10,
+                // height: MediaQuery.of(context).size.height - 80,
+                padding: EdgeInsets.all(20),
+                color: Colors.white,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("Really want to delete $deleteType products of shop ${shop.name}?"),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AbsorbPointer(
+                          absorbing: busy,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                "cancel",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(primary: Color(0xff9299cd))),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        AbsorbPointer(
+                          absorbing: busy,
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                setState(() {
+                                  busy = true;
+                                });
+                                Navigator.of(context).pop();
+                                await fbProductAPI.deleteProductsOfShop(shop, deleteType);
+                                showToastNotification("Successfully deleted $deleteType products of shop ${shop.name}");
+                                setState(() {
+                                  busy = false;
+                                });
+                              },
+                              child: Text(
+                                "delete",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(primary: Color(0xffe77681))),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+
+
   }
 
   void onUpdateShop() async {

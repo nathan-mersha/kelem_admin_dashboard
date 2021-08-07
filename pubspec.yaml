@@ -25,6 +25,7 @@ dependencies:
   path: ^1.8.0
   http: ^0.13.3
   intl: ^0.17.0
+  simple_tags: 0.0.4
 
 dev_dependencies:
   flutter_test:

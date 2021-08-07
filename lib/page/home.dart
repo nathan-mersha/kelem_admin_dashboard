@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  int selectedMenuIndex = 2; // set to product approval page (default)
+  int selectedMenuIndex = 6; // set to product approval page (default)
 
   @override
   Widget build(BuildContext context) {

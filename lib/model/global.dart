@@ -223,23 +223,25 @@ class FeaturesConfig {
   static const String CASH_OUT_SUPPORT_BANKS = "cashOutSupportBanks";
   static const String TIN = "tin";
 
-  bool buyCredit;
-  bool wallet;
-  bool transactions;
-  bool shop;
-  bool wishList;
-  bool news;
   bool aboutUs;
-  bool order;
-  bool forceNewsOnHome;
   bool bestSellers;
+  bool buyCredit;
   bool cashOut;
+  bool forceNewsOnHome;
+  bool news;
+  bool order;
+  bool paymentMethodCashOnDelivery;
+  bool paymentMethodHisabWallet;
+  bool paymentMethodKelemWallet;
   bool shopDetail;
   bool shopInformation;
-  bool paymentMethodCashOnDelivery;
-  bool paymentMethodKelemWallet;
-  bool paymentMethodHisabWallet;
   bool tin;
+  bool transactions;
+  bool shop;
+  bool wallet;
+  bool wishList;
+
+
   List<dynamic> cashOutSupportBanks;
 
   FeaturesConfig({

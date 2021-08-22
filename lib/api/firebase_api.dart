@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 class FbProductAPI {
   Future<List<Product>> getUnApprovedProducts() async {
     List<Product> unApprovedProducts = [];
-    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('approved', isEqualTo: false).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('approved', isEqualTo: false).limit(20).get().then((QuerySnapshot<Map<String, dynamic>> value) {
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
         Product product = Product.toModel(element.data());
         unApprovedProducts.add(product);
@@ -95,7 +95,7 @@ class FbGlobalConfigAPI {
   static const String CONFIG_ID = "snlopoku8ggZD0x7ZDX8";
 
   Future<GlobalConfig> get() async {
-    return FirebaseFirestore.instance.collection("globalConfig").doc(CONFIG_ID).get().then((DocumentSnapshot value) {
+    return FirebaseFirestore.instance.collection(GlobalConfig.COLLECTION_NAME).doc(CONFIG_ID).get().then((DocumentSnapshot value) {
       dynamic data = value.data();
 
       AdditionalFee additionalFee = AdditionalFee.toModel(data[GlobalConfig.ADDITIONAL_FEE]);
@@ -117,9 +117,14 @@ class FbGlobalConfigAPI {
       return globalConfig;
     });
   }
+
+  Future update(GlobalConfig globalConfig) async{
+    return FirebaseFirestore.instance.collection(GlobalConfig.COLLECTION_NAME).doc(CONFIG_ID).update(GlobalConfig.toMap(globalConfig));
+  }
+
 }
 
-class SyncShopsAPI {
+class SyncServerAPI {
   static const url = "https://kelem.et";
 
   Future<List<SyncReportModel>> getSync() {
@@ -140,4 +145,41 @@ class SyncShopsAPI {
       return [];
     });
   }
+
+  Future<Map<String, dynamic>> getSystemStat(){
+    String getStatURL = "$url/server/system_info";
+
+    return http.get(Uri.parse(getStatURL), headers: {"Content-Type": "application/json"}).then((http.Response response) {
+      return jsonDecode(response.body);
+    }, onError: (err) {
+      print(err);
+      return [];
+    });
+  }
+}
+
+class TsAPI {
+  static const url = "https://kelem.et/server/ts";
+
+  Future indexProduct(Product product) {
+    String indexURL = "$url/index/product";
+    dynamic body = Product.toMap(product);
+    return http.post(Uri.parse(indexURL), headers: {"Content-Type": "application/json"},body: jsonEncode(body)).then((http.Response response) {
+      return jsonDecode(response.body);
+    }, onError: (err) {
+      return {};
+    });
+  }
+
+
+  Future indexShop(Shop shop) {
+    String indexURL = "$url/index/shop";
+    dynamic body = Shop.toMap(shop);
+    return http.post(Uri.parse(indexURL), headers: {"Content-Type": "application/json"},body: jsonEncode(body)).then((http.Response response) {
+      return jsonDecode(response.body);
+    }, onError: (err) {
+      return {};
+    });
+  }
+
 }

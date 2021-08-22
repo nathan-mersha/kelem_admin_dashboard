@@ -41,8 +41,8 @@ class GlobalConfig {
       FEATURES_CONFIG: FeaturesConfig.toMap(globalConfig.featuresConfig),
       BANK_CONFIG: BankConfig.toMapList(globalConfig.bankConfigs),
       CATEGORIES: Category.toMapList(globalConfig.categories),
-      FIRST_MODIFIED: globalConfig.firstModified,
-      LAST_MODIFIED: globalConfig.lastModified
+      FIRST_MODIFIED: globalConfig.firstModified.toString(),
+      LAST_MODIFIED: globalConfig.lastModified.toString()
     };
   }
 
@@ -164,6 +164,7 @@ class SubscriptionPackage {
 
   /// Converts Model to Map
   static Map<String, dynamic> toMap(SubscriptionPackage subscriptionPackage) {
+
     return {
       NAME: subscriptionPackage.name,
       FEATURES: subscriptionPackage.features,
@@ -243,6 +244,8 @@ class FeaturesConfig {
 
 
   List<dynamic> cashOutSupportBanks;
+
+
 
   FeaturesConfig({
     required this.buyCredit,
@@ -336,15 +339,22 @@ class FeaturesConfig {
 class BankConfig {
   /// Defines key values to extract from a map
   static const String BANK_NAME = "bankName";
+  static const String BANK_CODE = "bankCode";
+  static const String ICON = "icon";
   static const String DEPOSIT_TO_DIALLING_PATTERN = "depositToDiallingPattern";
   static const String KELEM_BANK_ACCOUNT = "kelemBankAccount";
 
   String bankName;
+  String bankCode;
+  String icon;
   String depositToDiallingPattern;
   String kelemBankAccount;
 
   BankConfig({
     required this.bankName,
+    required this.bankCode,
+    required this.icon,
+
     required this.depositToDiallingPattern,
     required this.kelemBankAccount,
   });
@@ -353,6 +363,8 @@ class BankConfig {
   static Map<String, dynamic> toMap(BankConfig bankConfig) {
     return {
       BANK_NAME: bankConfig.bankName,
+      BANK_CODE: bankConfig.bankCode,
+      ICON : bankConfig.icon,
       DEPOSIT_TO_DIALLING_PATTERN: bankConfig.depositToDiallingPattern,
       KELEM_BANK_ACCOUNT: bankConfig.kelemBankAccount,
     };
@@ -362,6 +374,8 @@ class BankConfig {
   static BankConfig toModel(Map<String, dynamic> map) {
     return BankConfig(
       bankName: map[BANK_NAME],
+      bankCode: map[BANK_CODE],
+      icon: map[ICON],
       depositToDiallingPattern: map[DEPOSIT_TO_DIALLING_PATTERN],
       kelemBankAccount: map[KELEM_BANK_ACCOUNT],
     );
@@ -418,7 +432,7 @@ class Category {
     return Category(
       name: map[NAME],
       icon: map[ICON] == null ? "some icon" : map[ICON],
-      subCategories: map[SUB_CATEGORIES],
+      subCategories: map[SUB_CATEGORIES] == null ? [] : map[SUB_CATEGORIES],
     );
   }
 
@@ -441,3 +455,5 @@ class Category {
     return mapList;
   }
 }
+
+

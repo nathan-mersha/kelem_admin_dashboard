@@ -50,6 +50,8 @@ class _ShopPageState extends State<ShopPage> {
   List<String> categories = [];
   List<String> subscriptionPackages = [];
   Shop selectedShop = Shop(firstModified: DateTime.now(), lastModified: DateTime.now());
+  TsAPI tsAPI = TsAPI();
+
 
   // flutter build web --web-renderer html --release
   @override
@@ -231,7 +233,9 @@ class _ShopPageState extends State<ShopPage> {
                         scrollDirection: Axis.vertical,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: DataTable(
+                          child:
+
+                          DataTable(
                               dividerThickness: 0,
                               columns: const <DataColumn>[
                                 DataColumn(
@@ -303,10 +307,6 @@ class _ShopPageState extends State<ShopPage> {
   }
 
   void onItemSelected(Shop shop) {
-    print("selected shop : ");
-    print("selected shop name : ${shop.name}");
-    print(Shop.toMap(shop));
-
     setState(() {
       selectedShop = shop;
       setDataToForm();
@@ -592,8 +592,6 @@ class _ShopPageState extends State<ShopPage> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter telegram channel id';
-                        } else if (value.length != 10) {
-                          return "Telegram channel id length must be 10";
                         }
                         return null;
                       },
@@ -890,9 +888,13 @@ class _ShopPageState extends State<ShopPage> {
     });
     setDetailData();
     await firebaseAPI.updateShop(selectedShop);
+    await tsAPI.indexShop(selectedShop);
     clearFormData();
+
     showToastNotification("Successfully updated shop : ${selectedShop.name}");
     initializeData();
+
+
     setState(() {
       busy = false;
     });
@@ -919,6 +921,7 @@ class _ShopPageState extends State<ShopPage> {
 
     setDetailData();
     await firebaseAPI.createShop(selectedShop);
+    await tsAPI.indexShop(selectedShop);
     clearFormData();
     showToastNotification("Successfully created shop");
     initializeData();

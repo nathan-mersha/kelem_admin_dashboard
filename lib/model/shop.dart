@@ -24,6 +24,13 @@ class Shop {
   static const String DESCRIPTION = "description";
   static const String CATEGORY = "category";
   static const String LOGO = "logo";
+
+  static const String TOTAL_APPROVED_PRODUCTS = "totalApprovedProducts";
+  static const String TOTAL_DELETIONS = "totalDeletions";
+  static const String TOTAL_NONE_PRODUCT_POSTS = "totalNoneProductPosts";
+  static const String TOTAL_PRODUCTS = "totalProducts";
+  static const String TOTAL_UPDATES = "totalUpdates";
+
   static const String FIRST_MODIFIED = "firstModified";
   static const String LAST_MODIFIED = "lastModified";
 
@@ -45,6 +52,13 @@ class Shop {
   String description;
   String category;
   dynamic logo;
+
+  num totalApprovedProducts;
+  num totalDeletions;
+  num totalNoneProducts;
+  num totalProducts;
+  num totalUpdates;
+
   DateTime firstModified;
   DateTime lastModified;
 
@@ -67,6 +81,11 @@ class Shop {
       this.description = Shop.UN_AVAILABLE,
       this.category = Shop.UN_AVAILABLE,
       this.logo = Shop.UN_AVAILABLE,
+      this.totalApprovedProducts = 0,
+      this.totalDeletions = 0,
+      this.totalNoneProducts = 0,
+      this.totalProducts = 0,
+      this.totalUpdates = 0,
       required this.firstModified,
       required this.lastModified});
 
@@ -91,6 +110,11 @@ class Shop {
       DESCRIPTION: shop.description,
       CATEGORY: shop.category,
       LOGO: shop.logo,
+      TOTAL_APPROVED_PRODUCTS: shop.totalApprovedProducts,
+      TOTAL_DELETIONS: shop.totalDeletions,
+      TOTAL_NONE_PRODUCT_POSTS: shop.totalNoneProducts,
+      TOTAL_PRODUCTS: shop.totalProducts,
+      TOTAL_UPDATES: shop.totalUpdates,
       FIRST_MODIFIED: shop.firstModified.toIso8601String(),
       LAST_MODIFIED: shop.lastModified.toIso8601String()
     };
@@ -98,28 +122,6 @@ class Shop {
 
   /// Converts Map to Model
   static Shop toModel(Map<String, dynamic> map) {
-
-    print("---------------------------------- ");
-    print(map[ID]);
-    print(map[TELEGRAM_CHANNEL_ID]);
-    print(map[TELEGRAM_CHANNEL_LINK]);
-    print(map[SHOP_ID]);
-    print(map[USER_ID]);
-    print(map[NAME]);
-    print(map[PRIMARY_PHONE]);
-    print(map[SECONDARY_PHONE]);
-    print(map[EMAIL]);
-    print(map[WEBSITE]);
-    print(map[PHYSICAL_ADDRESS]);
-    print(map[CO_ORDINATES]);
-    print(map[IS_VIRTUAL]);
-    print(map[IS_VERIFIED]);
-    print(map[SUBSCRIPTION_PACKAGE]);
-    print(map[DESCRIPTION]);
-    print(map[CATEGORY]);
-    print(map[LOGO]);
-    print(map[FIRST_MODIFIED]);
-    print(map[LAST_MODIFIED]);
     try {
       return Shop(
           id: map[ID],
@@ -140,6 +142,11 @@ class Shop {
           description: map[DESCRIPTION],
           category: map[CATEGORY],
           logo: map[LOGO],
+          totalApprovedProducts: map[TOTAL_APPROVED_PRODUCTS],
+          totalDeletions: map[TOTAL_DELETIONS],
+          totalNoneProducts: map[TOTAL_NONE_PRODUCT_POSTS],
+          totalProducts: map[TOTAL_PRODUCTS],
+          totalUpdates: map[TOTAL_UPDATES],
           firstModified: map[FIRST_MODIFIED] == null ? DateTime.now() : DateTime.parse(map[FIRST_MODIFIED]),
           lastModified: map[LAST_MODIFIED] == null ? DateTime.now() : DateTime.parse(map[LAST_MODIFIED]));
     } catch (e) {

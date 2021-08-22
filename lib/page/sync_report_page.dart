@@ -16,7 +16,7 @@ class SyncReportPage extends StatefulWidget {
 class _SyncReportPageState extends State<SyncReportPage> {
   bool busy = false;
 
-  SyncShopsAPI syncShopsAPI = SyncShopsAPI();
+  SyncServerAPI syncShopsAPI = SyncServerAPI();
   List<SyncReportModel> syncReportModels = [];
 
   // flutter build web --web-renderer html --release

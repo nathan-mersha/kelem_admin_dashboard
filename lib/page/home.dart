@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:product_approval_dashboard/page/SyncReportPage.dart';
+import 'package:product_approval_dashboard/page/sync_report_page.dart';
 import 'package:product_approval_dashboard/page/product_approval.dart';
 import 'package:product_approval_dashboard/page/settings.dart';
 import 'package:product_approval_dashboard/page/shop.dart';
@@ -23,13 +23,18 @@ class _HomePageState extends State<HomePage> {
   List menus = [
     {},
     {
+      NAME: "Statistics", //
+      ICON_DATA: Icons.stacked_line_chart,
+      CHILD: StatisticsPage(),
+    },
+    {
       NAME: "Product",
-      ICON_DATA: Icons.tag,
+      ICON_DATA: Icons.shopping_basket,
       CHILD: ProductApprovalPage(),
     },
     {
       NAME: "Shop",
-      ICON_DATA: Icons.shopping_basket_outlined,
+      ICON_DATA: Icons.storefront,
       CHILD: ShopPage(),
     },
     {
@@ -43,18 +48,13 @@ class _HomePageState extends State<HomePage> {
       CHILD: UserPage(),
     },
     {
-      NAME: "Statistics", //
-      ICON_DATA: Icons.insert_chart_outlined,
-      CHILD: StatisticsPage(),
-    },
-    {
       NAME: "Settings",
       ICON_DATA: Icons.settings_outlined,
       CHILD: SettingsPage(),
     },
   ];
 
-  int selectedMenuIndex = 6; // set to product approval page (default)
+  int selectedMenuIndex = 1; // set to product approval page (default)
 
   @override
   Widget build(BuildContext context) {

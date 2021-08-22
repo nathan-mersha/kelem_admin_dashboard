@@ -17,6 +17,7 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
   final _formKey = GlobalKey<FormState>();
 
   FbProductAPI firebaseAPI = FbProductAPI();
+  TsAPI tsAPI = TsAPI();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
   TextEditingController _regularPriceController = TextEditingController();
@@ -487,6 +488,8 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
       selectedProduct = unApprovedProducts.first;
       setDetailData();
     });
+
+    tsAPI.indexProduct(product);
     Fluttertoast.showToast(
         msg: "Successfully approved product : ${product.name}",
         toastLength: Toast.LENGTH_LONG,

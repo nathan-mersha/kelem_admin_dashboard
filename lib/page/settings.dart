@@ -188,6 +188,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       hintText: "add sub category ( separated by ,)",
                       labelText: "sub category",
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter at least one subcategory';
+                      }else if(!value.contains("unknown")){
+                        return 'unknown subcategory is required';
+                      }
+                      return null;
+                    },
                     // The validator receives the text that the user has entered.
                   ),
                   SizedBox(

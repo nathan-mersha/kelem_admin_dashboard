@@ -161,6 +161,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                         Row(
                                           children: [
                                             Text("release", style: titleStyle()),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
                                             Text(
                                               loaded ? systemInfo["system"]["release"] : "-",
                                               style: valueStyle(),
@@ -388,7 +391,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: SingleChildScrollView(scrollDirection: Axis.vertical,child: SingleChildScrollView(scrollDirection: Axis.horizontal,child: DataTable(
-                columnSpacing: 140,
+                columnSpacing: 110,
                 dividerThickness: 0,
                 columns: const <DataColumn>[
                   DataColumn(
@@ -421,6 +424,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   DataColumn(
                     label: Text(
                       'products',
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'posts',
                       style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
                     ),
                   ),
@@ -480,6 +489,14 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   DataCell(
                     Text(
                       e.totalProducts.toString(),
+                      style: TextStyle(fontSize: 13, color: Colors.black54),
+                      maxLines: 1,
+                      overflow: TextOverflow.clip,
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                      e.totalPosts.toString(),
                       style: TextStyle(fontSize: 13, color: Colors.black54),
                       maxLines: 1,
                       overflow: TextOverflow.clip,

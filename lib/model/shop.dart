@@ -30,6 +30,7 @@ class Shop {
   static const String TOTAL_NONE_PRODUCT_POSTS = "totalNoneProductPosts";
   static const String TOTAL_PRODUCTS = "totalProducts";
   static const String TOTAL_UPDATES = "totalUpdates";
+  static const String TOTAL_POSTS = "totalPosts";
 
   static const String FIRST_MODIFIED = "firstModified";
   static const String LAST_MODIFIED = "lastModified";
@@ -58,6 +59,7 @@ class Shop {
   num totalNoneProducts;
   num totalProducts;
   num totalUpdates;
+  num totalPosts;
 
   DateTime firstModified;
   DateTime lastModified;
@@ -86,6 +88,7 @@ class Shop {
       this.totalNoneProducts = 0,
       this.totalProducts = 0,
       this.totalUpdates = 0,
+        this.totalPosts = 0,
       required this.firstModified,
       required this.lastModified});
 
@@ -115,6 +118,7 @@ class Shop {
       TOTAL_NONE_PRODUCT_POSTS: shop.totalNoneProducts,
       TOTAL_PRODUCTS: shop.totalProducts,
       TOTAL_UPDATES: shop.totalUpdates,
+      TOTAL_POSTS: shop.totalPosts,
       FIRST_MODIFIED: shop.firstModified.toIso8601String(),
       LAST_MODIFIED: shop.lastModified.toIso8601String()
     };
@@ -147,6 +151,7 @@ class Shop {
           totalNoneProducts: map[TOTAL_NONE_PRODUCT_POSTS],
           totalProducts: map[TOTAL_PRODUCTS],
           totalUpdates: map[TOTAL_UPDATES],
+          totalPosts: map[TOTAL_POSTS],
           firstModified: map[FIRST_MODIFIED] == null ? DateTime.now() : DateTime.parse(map[FIRST_MODIFIED]),
           lastModified: map[LAST_MODIFIED] == null ? DateTime.now() : DateTime.parse(map[LAST_MODIFIED]));
     } catch (e) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:product_approval_dashboard/route/route.dart';
 import 'package:product_approval_dashboard/rsr/theme/main_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,9 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  late SharedPreferences prefs;
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
 
   @override
   Widget build(BuildContext context) {

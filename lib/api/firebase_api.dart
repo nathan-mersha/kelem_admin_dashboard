@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:product_approval_dashboard/model/contact_us.dart';
 import 'package:product_approval_dashboard/model/global.dart';
 import 'package:product_approval_dashboard/model/product.dart';
 import 'package:product_approval_dashboard/model/shop.dart';
@@ -12,7 +13,7 @@ import 'package:http/http.dart' as http;
 class FbProductAPI {
   Future<List<Product>> getUnApprovedProducts() async {
     List<Product> unApprovedProducts = [];
-    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('approved', isEqualTo: false).limit(20).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('approved', isEqualTo: false).limit(50).get().then((QuerySnapshot<Map<String, dynamic>> value) {
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
         Product product = Product.toModel(element.data());
         unApprovedProducts.add(product);
@@ -89,6 +90,30 @@ class FbShopAPI {
     storage.ref(shop.logo).delete();
     return FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).doc(shop.shopId).delete();
   }
+
+
+}
+
+class FbContactUsAPI {
+
+
+  Future<List<ContactUs>> getUnResolvedContactUsMessages() async {
+    List<ContactUs> contactUsMessages = [];
+    await FirebaseFirestore.instance.collection(ContactUs.COLLECTION_NAME).where('resolved', isEqualTo: false).limit(50).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+      value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
+        element.data()["id"] = element.id;
+        ContactUs contactUs = ContactUs.toModel(element.data());
+        contactUsMessages.add(contactUs);
+      });
+    });
+
+    return contactUsMessages;
+  }
+
+  Future updateContactUsMessages(ContactUs contactUs) {
+    return FirebaseFirestore.instance.collection(ContactUs.COLLECTION_NAME).doc(contactUs.id).update(ContactUs.toMap(contactUs));
+  }
+
 }
 
 class FbGlobalConfigAPI {

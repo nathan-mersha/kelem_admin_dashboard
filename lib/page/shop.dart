@@ -782,8 +782,10 @@ class _ShopPageState extends State<ShopPage> {
                                 });
                                 Navigator.of(context).pop();
                                 await firebaseAPI.deleteShop(shop);
+                                await fbProductAPI.deleteProductsOfShop(shop, Product.ALL);
+
                                 clearFormData();
-                                showToastNotification("Successfully deleted shop : ${shop.name}");
+                                showToastNotification("Successfully deleted shop : ${shop.name} and related datas");
                                 initializeData();
 
                                 setState(() {
@@ -859,6 +861,24 @@ class _ShopPageState extends State<ShopPage> {
                                 });
                                 Navigator.of(context).pop();
                                 await fbProductAPI.deleteProductsOfShop(shop, deleteType);
+
+                                // update shop status
+                                if(deleteType == Product.ALL) {
+                                  selectedShop.totalPosts = 0;
+                                  selectedShop.totalDeletions = 0;
+                                  selectedShop.totalUpdates = 0;
+                                  selectedShop.totalApprovedProducts = 0;
+                                  selectedShop.totalNoneProducts = 0;
+                                  selectedShop.totalProducts = 0;
+                                }else if(deleteType == Product.APPROVED){
+                                  selectedShop.totalProducts = selectedShop.totalProducts - selectedShop.totalApprovedProducts;
+                                  selectedShop.totalApprovedProducts = 0;
+                                }
+
+                                await firebaseAPI.updateShop(selectedShop);
+
+                                // Updating shop
+
                                 showToastNotification("Successfully deleted $deleteType products of shop ${shop.name}");
                                 setState(() {
                                   busy = false;

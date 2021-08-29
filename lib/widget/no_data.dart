@@ -7,15 +7,12 @@ class NoDataFound extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            "assets/images/no_data_found.png",
-            width: 150,
-          ),
+          Icon(Icons.data_usage, color: Theme.of(context).accentColor,size: 40,),
           SizedBox(
             height: 20,
           ),
           Text(
-            "no data found",
+            "no data",
             style: TextStyle(color: Colors.black54, fontSize: 12),
           ),
         ],

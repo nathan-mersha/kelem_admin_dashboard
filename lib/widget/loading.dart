@@ -12,7 +12,8 @@ class Loading extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SpinKitSquareCircle(
+
+        SpinKitDancingSquare(
           color: Theme.of(context).primaryColor,
           size: 40.0,
         ),

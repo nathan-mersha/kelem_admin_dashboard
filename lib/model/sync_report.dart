@@ -55,8 +55,6 @@ class SyncReportModel {
 
   /// Converts Map to Model
   static SyncReportModel toModel(Map<String, dynamic> map) {
-    print(map[FIRST_MODIFIED]);
-    print(map[LAST_MODIFIED]);
     try {
       return SyncReportModel(
           shop: map[SHOP],

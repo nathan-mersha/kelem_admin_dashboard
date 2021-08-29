@@ -380,6 +380,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
+  simple_autocomplete_formfield:
+    dependency: "direct main"
+    description:
+      name: simple_autocomplete_formfield
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   simple_tags:
     dependency: "direct main"
     description:
@@ -431,6 +438,13 @@ packages:
     dependency: transitive
     description:
       name: test_api
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
+  textfield_state:
+    dependency: transitive
+    description:
+      name: textfield_state
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"

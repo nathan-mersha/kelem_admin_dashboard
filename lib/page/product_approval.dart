@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:product_approval_dashboard/api/firebase_api.dart';
+import 'package:product_approval_dashboard/model/global.dart';
 import 'package:product_approval_dashboard/model/product.dart';
 import 'package:product_approval_dashboard/model/shop.dart';
 import 'package:product_approval_dashboard/widget/loading.dart';
 import 'package:product_approval_dashboard/widget/no_data.dart';
 import 'package:product_approval_dashboard/widget/stat_card.dart';
+import 'package:simple_autocomplete_formfield/simple_autocomplete_formfield.dart';
 
 class ProductApprovalPage extends StatefulWidget {
   @override
@@ -17,6 +19,8 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
   final _formKey = GlobalKey<FormState>();
 
   FbProductAPI firebaseAPI = FbProductAPI();
+  FbGlobalConfigAPI fbGlobalConfigAPI = FbGlobalConfigAPI();
+
   TsAPI tsAPI = TsAPI();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
@@ -32,6 +36,10 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
   List<Product> unApprovedProducts = [];
   bool dataInitialized = false;
   Product selectedProduct = Product(shop: Shop(firstModified: DateTime.now(), lastModified: DateTime.now()), firstModified: DateTime.now(), lastModified: DateTime.now());
+
+  List<String> allSubCategoriesOfShop = [];
+  List<Category> globalCategories = [];
+  late GlobalConfig globalConfigValue;
 
   // flutter build web --web-renderer html --release
   @override
@@ -127,10 +135,17 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
       dataInitialized = false;
     });
     List<Product> data = await firebaseAPI.getUnApprovedProducts();
+    await fbGlobalConfigAPI.get().then((GlobalConfig value) {
+      globalCategories = value.categories;
+      globalConfigValue = value;
+    });
+
     setState(() {
       unApprovedProducts = data;
       selectedProduct = unApprovedProducts.first;
       setDetailData();
+      allSubCategoriesOfShop = globalCategories.firstWhere((element) => selectedProduct.shop.category == element.name).subCategories.map((e) => e.toString()).toList();
+
       dataInitialized = true;
     });
   }
@@ -265,6 +280,7 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
     setState(() {
       selectedProduct = product;
       setDetailData();
+      allSubCategoriesOfShop = globalCategories.firstWhere((element) => product.shop.category == element.name).subCategories.map((e) => e.toString()).toList();
     });
   }
 
@@ -355,17 +371,32 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
                         return null;
                       },
                     ),
-                    TextFormField(
+                    SimpleAutocompleteFormField<String>(
                       style: TextStyle(fontSize: 14),
-
+                      decoration: InputDecoration(
+                        labelText: "sub category",
+                      ),
                       controller: _subCategoryController,
-                      decoration: InputDecoration(hintText: "sub category", labelText: "sub category"),
-                      // The validator receives the text that the user has entered.
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter sub category';
-                        }
-                        return null;
+                      maxSuggestions: 10,
+                      itemBuilder: (context, item) => Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(item!),
+                      ),
+                      onSearch: (String search) async => search.isEmpty
+                          ? allSubCategoriesOfShop
+                          : allSubCategoriesOfShop.where((selectedSubCat) {
+                              return selectedSubCat.toLowerCase().contains(search.toLowerCase());
+                            }).toList(),
+                      itemFromString: (string) {
+                        return allSubCategoriesOfShop.singleWhere((selectedSubCat) => selectedSubCat == string.toLowerCase(), orElse: () => '');
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          selectedProduct.category = value!;
+                        });
+                      },
+                      validator: (selectedSubCat) {
+                        return selectedSubCat == null ? 'Please enter sub category' : null;
                       },
                     ),
                     TextFormField(
@@ -479,7 +510,7 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
         fontSize: 16.0);
   }
 
-  void onAcceptProduct(Product product) async {
+  void approveProduct(Product product) async {
     product.approved = true;
     product.keywords = product.name.split(" ");
     await firebaseAPI.updateProduct(product);
@@ -498,6 +529,69 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
         backgroundColor: Colors.green,
         textColor: Colors.white,
         fontSize: 16.0);
+
+  }
+
+  void onAcceptProduct(Product product) async {
+    if (!allSubCategoriesOfShop.contains(product.subCategory)) {
+      await showGeneralDialog(
+          context: context,
+          barrierDismissible: true,
+          barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+          barrierColor: Colors.black45,
+          transitionDuration: const Duration(milliseconds: 200),
+          pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+            return Center(
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(18))),
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      RichText(
+                        textAlign: TextAlign.start,
+                        text: TextSpan(style: TextStyle(color: Colors.black87), text: "", children: [
+                          TextSpan(text: "Do you want to add sub category"),
+                          TextSpan(text: " ${product.subCategory}", style: TextStyle(fontWeight: FontWeight.w900)),
+                          TextSpan(text: " in ${product.shop.category} category?\n\n\n\n"),
+
+                          TextSpan(text: "Existing subcategories in ${product.shop.category}\n\n", style: TextStyle(fontSize: 12)),
+                          TextSpan(text: allSubCategoriesOfShop.join("  "), style: TextStyle(fontSize: 14, color: Theme.of(context).primaryColor))
+                        ]),
+                      ),
+                      SizedBox(height: 20,),
+                      ElevatedButton(
+                          onPressed: () async {
+                            addNewSubCategoryEntry();
+                            approveProduct(product);
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            "create a new subcategory ' ${product.subCategory} ' in category ${product.shop.category} and approve product",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(primary: Color(0xffe77681)))
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+    } else {
+      approveProduct(product);
+    }
+  }
+
+  void addNewSubCategoryEntry() async{
+    globalConfigValue.categories.forEach((Category element) {
+      if(element.name == selectedProduct.shop.category){
+        element.subCategories.add(selectedProduct.subCategory);
+      }
+    });
+    await fbGlobalConfigAPI.update(globalConfigValue);
   }
 
   Widget buildProductImageView() {

@@ -29,6 +29,7 @@ dependencies:
   intl: ^0.17.0
   simple_tags: 0.0.4
   shared_preferences: ^2.0.7
+  simple_autocomplete_formfield: ^0.3.0
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 import 'package:product_approval_dashboard/api/firebase_api.dart';
 import 'package:product_approval_dashboard/model/global.dart';
 import 'package:product_approval_dashboard/widget/loading.dart';
 import 'package:simple_tags/simple_tags.dart';
+import 'package:firebase/firebase.dart' as fb;
+import 'package:mime_type/mime_type.dart';
+import 'package:path/path.dart' as p;
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -54,6 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late GlobalConfig oldGlobalConfigData;
   bool _globalConfigInitialized = false;
   bool _globalConfigEdited = false;
+  bool uploadingImage = false;
 
   double _switchButtonScale = 0.8;
 
@@ -106,25 +111,55 @@ class _SettingsPageState extends State<SettingsPage> {
       setState(() {
         globalConfig = value;
         _globalConfigInitialized = true;
-        showToastNotification("Successfully reseted globally config");
+        showToastNotification("Successfully reset globally config");
       });
     });
   }
 
   void updateGlobalConfigData() async {
-    await fbGlobalConfigAPI.update(globalConfig).then((value){
+    await fbGlobalConfigAPI.update(globalConfig).then((value) {
       setState(() {
         _globalConfigInitialized = true;
         showToastNotification("Successfully updated globally config");
       });
     });
-
   }
 
   Widget buildCategorySection() {
     return Column(
       children: [buildCreateCategorySS(), Expanded(flex: 2, child: buildViewCategorySS()), Expanded(flex: 2, child: buildViewSubCategorySS())],
     );
+  }
+
+  Future<Uri?> imagePicker() {
+    return ImagePickerWeb.getImageInfo.then((MediaInfo mediaInfo) {
+      return uploadFile(mediaInfo, 'category', mediaInfo.fileName ?? "");
+    });
+  }
+
+  Future<Uri?> uploadFile(MediaInfo mediaInfo, String ref, String fileName) async {
+    setState(() {
+      uploadingImage = true;
+    });
+    try {
+      String? mimeType = mime(p.basename(mediaInfo.fileName ?? ""));
+      var metaData = fb.UploadMetadata(contentType: mimeType);
+      fb.StorageReference storageReference = fb.storage().ref(ref).child(fileName);
+
+      fb.UploadTaskSnapshot uploadTaskSnapshot = await storageReference.put(mediaInfo.data, metaData).future;
+      Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
+
+
+      setState(() {
+        uploadingImage = false;
+        globalConfig.categories[selectedCategoryIndex].icon = imageUri.toString();
+      });
+
+      return imageUri;
+    } catch (e) {
+      print('File Upload Error: $e');
+      return null;
+    }
   }
 
   Widget buildCreateCategorySS() {
@@ -140,6 +175,23 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  uploadingImage ? CircularProgressIndicator() : TextButton(child: globalConfig.categories[selectedCategoryIndex].icon.contains("http")
+                      ? ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(globalConfig.categories[selectedCategoryIndex].icon, width: 20,),
+                  )
+                      : Icon(
+                    Icons.image,
+                    color: Theme.of(context).primaryColor,
+                  ),onPressed: ()async{
+
+                    await imagePicker();
+                    onGlobalConfigEdited();
+
+
+
+                  },),
+
                   TextFormField(
                     style: TextStyle(fontSize: 14),
                     controller: _categoryNameController,
@@ -169,19 +221,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   TextFormField(
                     style: TextStyle(fontSize: 14),
-
-                    controller: _categoryIconController,
-                    decoration: InputDecoration(hintText: "icon", labelText: "icon"),
-                    // The validator receives the text that the user has entered.
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter icon';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    style: TextStyle(fontSize: 14),
                     controller: _subCategoryNameController,
 
                     decoration: InputDecoration(
@@ -191,7 +230,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter at least one subcategory';
-                      }else if(!value.contains("unknown")){
+                      } else if (!value.contains("unknown")) {
                         return 'unknown subcategory is required';
                       }
                       return null;
@@ -480,7 +519,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (_formCreateCategoryKey.currentState!.validate()) {
       Category selectedCategory = globalConfig.categories[selectedCategoryIndex];
       selectedCategory.name = _categoryNameController.text;
-      selectedCategory.icon = _categoryIconController.text;
+      selectedCategory.icon = selectedCategory.icon;
       selectedCategory.subCategories = _subCategoryNameController.text.split(",");
 
       setState(() {
@@ -1704,7 +1743,7 @@ class _SettingsPageState extends State<SettingsPage> {
         });
   }
 
-  void onUpdateGlobalConfig() async{
+  void onUpdateGlobalConfig() async {
     await showGeneralDialog(
         context: context,
         barrierDismissible: true,

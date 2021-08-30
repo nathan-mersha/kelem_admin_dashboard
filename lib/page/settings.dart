@@ -174,12 +174,10 @@ class _SettingsPageState extends State<SettingsPage> {
               key: _formCreateCategoryKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
+
                 children: [
                   uploadingImage ? CircularProgressIndicator() : TextButton(child: globalConfig.categories[selectedCategoryIndex].icon.contains("http")
-                      ? ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(globalConfig.categories[selectedCategoryIndex].icon, width: 20,),
-                  )
+                      ? CircleAvatar(backgroundColor : Theme.of(context).primaryColor, child: Image.network(globalConfig.categories[selectedCategoryIndex].icon, width: 20,),)
                       : Icon(
                     Icons.image,
                     color: Theme.of(context).primaryColor,

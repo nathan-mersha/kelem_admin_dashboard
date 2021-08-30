@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  int selectedMenuIndex = 1; // set to product approval page (default)
+  int selectedMenuIndex = 7; // set to product approval page (default)
   late KSharedPreference kSharedPreference;
   String userName = "";
   String userImage = "";

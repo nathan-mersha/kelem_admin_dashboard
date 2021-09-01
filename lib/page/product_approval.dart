@@ -26,6 +26,7 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
   TextEditingController _regularPriceController = TextEditingController();
   TextEditingController _authorController = TextEditingController();
 
+  TextEditingController _categoryController = TextEditingController();
   TextEditingController _subCategoryController = TextEditingController();
   TextEditingController _referenceController = TextEditingController();
 
@@ -154,6 +155,7 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
     _priceController.text = selectedProduct.price.toString();
     _regularPriceController.text = selectedProduct.regularPrice.toString();
     _authorController.text = selectedProduct.authorOrManufacturer;
+    _categoryController.text = selectedProduct.category;
     _subCategoryController.text = selectedProduct.subCategory;
     _referenceController.text = selectedProduct.reference;
     _tagController.text = selectedProduct.tag.join(",");
@@ -373,6 +375,41 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
                     SimpleAutocompleteFormField<String>(
                       style: TextStyle(fontSize: 14),
                       decoration: InputDecoration(
+                        labelText: "category",
+                      ),
+                      controller: _categoryController,
+                      maxSuggestions: 10,
+                      itemBuilder: (context, item) => Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(item!),
+                      ),
+                      onSearch: (String search) async => search.isEmpty
+                          ? globalCategories.map((e) => e.name).toList()
+                          : globalCategories.map((e) => e.name).toList().where((selectedCat) {
+                              return selectedCat.toLowerCase().contains(search.toLowerCase());
+                            }).toList(),
+                      itemFromString: (string) {
+                        return globalCategories.map((e) => e.name).toList().singleWhere((selectedCat) => selectedCat == string.toLowerCase(), orElse: () => '');
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          selectedProduct.category = value!;
+                          allSubCategoriesOfShop = globalCategories.firstWhere((element) => selectedProduct.category == element.name).subCategories.map((e) => e.toString()).toList();
+                        });
+                      },
+                      validator: (selectedCat) {
+                        if (selectedCat == null) {
+                          return 'Please enter category';
+                        } else if (!globalCategories.map((e) => e.name).toList().contains(selectedCat.toString())) {
+                          return 'Category does not exist';
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    SimpleAutocompleteFormField<String>(
+                      style: TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
                         labelText: "sub category",
                       ),
                       controller: _subCategoryController,
@@ -391,7 +428,7 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
                       },
                       onChanged: (value) {
                         setState(() {
-                          selectedProduct.category = value!;
+                          selectedProduct.subCategory = value!;
                         });
                       },
                       validator: (selectedSubCat) {
@@ -471,6 +508,7 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
                             selectedProduct.price = num.parse(_priceController.text);
                             selectedProduct.regularPrice = num.parse(_regularPriceController.text);
                             selectedProduct.authorOrManufacturer = _authorController.text;
+                            selectedProduct.category = _categoryController.text;
                             selectedProduct.subCategory = _subCategoryController.text;
                             selectedProduct.reference = _referenceController.text;
                             selectedProduct.tag = _tagController.text.split(",");
@@ -528,7 +566,6 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
         backgroundColor: Colors.green,
         textColor: Colors.white,
         fontSize: 16.0);
-
   }
 
   void onAcceptProduct(Product product) async {
@@ -556,12 +593,13 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
                           TextSpan(text: "Do you want to add sub category"),
                           TextSpan(text: " ${product.subCategory}", style: TextStyle(fontWeight: FontWeight.w900)),
                           TextSpan(text: " in ${product.shop.category} category?\n\n\n\n"),
-
                           TextSpan(text: "Existing subcategories in ${product.shop.category}\n\n", style: TextStyle(fontSize: 12)),
                           TextSpan(text: allSubCategoriesOfShop.join("  "), style: TextStyle(fontSize: 14, color: Theme.of(context).primaryColor))
                         ]),
                       ),
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       ElevatedButton(
                           onPressed: () async {
                             addNewSubCategoryEntry();
@@ -584,9 +622,9 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
     }
   }
 
-  void addNewSubCategoryEntry() async{
+  void addNewSubCategoryEntry() async {
     globalConfigValue.categories.forEach((Category element) {
-      if(element.name == selectedProduct.shop.category){
+      if (element.name == selectedProduct.shop.category) {
         element.subCategories.add(selectedProduct.subCategory);
       }
     });

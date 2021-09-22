@@ -23,6 +23,7 @@ class Shop {
   static const String SUBSCRIPTION_PACKAGE = "subscriptionPackage";
   static const String DESCRIPTION = "description";
   static const String CATEGORY = "category";
+  static const String RANK = "rank";
   static const String LOGO = "logo";
 
   static const String TOTAL_APPROVED_PRODUCTS = "totalApprovedProducts";
@@ -52,6 +53,7 @@ class Shop {
   String subscriptionPackage;
   String description;
   String category;
+  num rank;
   dynamic logo;
 
   num totalApprovedProducts;
@@ -82,6 +84,7 @@ class Shop {
       this.subscriptionPackage = Shop.UN_AVAILABLE,
       this.description = Shop.UN_AVAILABLE,
       this.category = Shop.UN_AVAILABLE,
+        this.rank = 1,
       this.logo = Shop.UN_AVAILABLE,
       this.totalApprovedProducts = 0,
       this.totalDeletions = 0,
@@ -112,6 +115,7 @@ class Shop {
       SUBSCRIPTION_PACKAGE: shop.subscriptionPackage,
       DESCRIPTION: shop.description,
       CATEGORY: shop.category,
+      RANK: shop.rank,
       LOGO: shop.logo,
       TOTAL_APPROVED_PRODUCTS: shop.totalApprovedProducts,
       TOTAL_DELETIONS: shop.totalDeletions,
@@ -126,6 +130,7 @@ class Shop {
 
   /// Converts Map to Model
   static Shop toModel(Map<String, dynamic> map) {
+    print(map);
     try {
       return Shop(
           id: map[ID],
@@ -145,6 +150,7 @@ class Shop {
           subscriptionPackage: map[SUBSCRIPTION_PACKAGE],
           description: map[DESCRIPTION],
           category: map[CATEGORY],
+          rank: map[RANK] == null ? 1 : num.tryParse(map[RANK].toString()) ?? 1,
           logo: map[LOGO],
           totalApprovedProducts: map[TOTAL_APPROVED_PRODUCTS],
           totalDeletions: map[TOTAL_DELETIONS],

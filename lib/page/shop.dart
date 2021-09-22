@@ -41,6 +41,7 @@ class _ShopPageState extends State<ShopPage> {
   TextEditingController _telegramChannelIdController = TextEditingController();
   TextEditingController _userIdController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _rankController = TextEditingController();
   TextEditingController _websiteController = TextEditingController();
   TextEditingController _physicalAddressController = TextEditingController();
   TextEditingController _coOrdinatesController = TextEditingController();
@@ -186,6 +187,7 @@ class _ShopPageState extends State<ShopPage> {
     selectedShop.telegramChannelId = _telegramChannelIdController.text;
     selectedShop.userId = _userIdController.text;
     selectedShop.email = _emailController.text;
+    selectedShop.rank = num.parse(_rankController.text);
     selectedShop.website = _websiteController.text;
     selectedShop.physicalAddress = _physicalAddressController.text;
 
@@ -201,6 +203,7 @@ class _ShopPageState extends State<ShopPage> {
     _telegramChannelIdController.text = selectedShop.telegramChannelId;
     _userIdController.text = selectedShop.userId;
     _emailController.text = selectedShop.email;
+    _rankController.text = selectedShop.rank.toString();
     _websiteController.text = selectedShop.website;
     _physicalAddressController.text = selectedShop.physicalAddress;
     _coOrdinatesController.text = selectedShop.coOrdinates.join(",");
@@ -623,6 +626,23 @@ class _ShopPageState extends State<ShopPage> {
                     ),
                     TextFormField(
                       style: TextStyle(fontSize: 14),
+                      controller: _rankController,
+                      validator: (value) {
+
+                        num? parsedRank = num.tryParse(value!);
+
+                        if (value.isEmpty) {
+                          return 'Please enter rank value (lowest is 1)';
+                        }else if (parsedRank == null) {
+                          return "Rank must be a number (lowest is 1)";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(hintText: "rank", labelText: "rank"),
+                      // The validator receives the text that the user has entered.
+                    ),
+                    TextFormField(
+                      style: TextStyle(fontSize: 14),
                       controller: _websiteController,
                       decoration: InputDecoration(hintText: "website", labelText: "website"),
                     ),
@@ -962,6 +982,7 @@ class _ShopPageState extends State<ShopPage> {
       _telegramChannelIdController.clear();
       _userIdController.clear();
       _emailController.clear();
+      _rankController.clear();
       _websiteController.clear();
       _physicalAddressController.clear();
       _coOrdinatesController.clear();

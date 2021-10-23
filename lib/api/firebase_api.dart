@@ -13,10 +13,46 @@ import 'package:http/http.dart' as http;
 class FbProductAPI {
   Future<List<Product>> getUnApprovedProducts() async {
     List<Product> unApprovedProducts = [];
-    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('approved', isEqualTo: false).limit(100).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('approved', isEqualTo: false).where('deleted',isEqualTo: false).limit(100).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+
+
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
         Product product = Product.toModel(element.data());
         unApprovedProducts.add(product);
+      });
+
+    });
+
+    return unApprovedProducts;
+  }
+
+  Future updateProductsDeletedFlag() async{
+    List<Product> unApprovedProducts = [];
+    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+
+      value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
+        Product product = Product.toModel(element.data());
+        unApprovedProducts.add(product);
+      });
+    });
+
+    unApprovedProducts.forEach((Product element) {
+
+      element.deleted = false;
+      updateProduct(element);
+
+    });
+
+  }
+
+  Future<List<Product>> updateUnknownProducts() async{
+    List<Product> unApprovedProducts = [];
+    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('subCategory', isEqualTo: "unknown").limit(10).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+      value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
+        Product product = Product.toModel(element.data());
+        product.subCategory = "other";
+        updateProduct(product);
+        print("Done for ${product.name}");
       });
     });
 
@@ -28,6 +64,18 @@ class FbProductAPI {
   }
 
   Future deleteProduct(Product product) async {
+    product.deleted = true;
+    FirebaseStorage storage = FirebaseStorage.instance;
+
+    product.image.forEach((imgPath) async {
+      await storage.ref(imgPath).delete();
+    });
+
+    return FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).doc(product.productId).update(Product.toMap(product));
+  }
+
+  Future deleteTotalyProduct(Product product) async{
+
     FirebaseStorage storage = FirebaseStorage.instance;
 
     product.image.forEach((imgPath) async {
@@ -50,9 +98,10 @@ class FbProductAPI {
           .get();
     }
 
+    print("deleting documents lenght : ${snapshot.docs.length.toString()}");
     for (var doc in snapshot.docs) {
       Product product = Product.toModel(doc.data());
-      deleteProduct(product);
+      deleteTotalyProduct(product);
     }
   }
 }
@@ -71,10 +120,29 @@ class FbShopAPI {
 
   Future<List<Shop>> getShops() async {
     List<Shop> shops = [];
-    await FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+    await FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).where(Shop.CREATED_FROM,isEqualTo: "telegram").get().then((QuerySnapshot<Map<String, dynamic>> value) {
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
         Shop shop = Shop.toModel(element.data());
         shops.add(shop);
+      });
+    });
+
+    return shops;
+  }
+
+
+
+  Future<List<Shop>> getShopsCreatedByUsers() async {
+    List<Shop> shops = [];
+    await FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+
+      value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
+
+        Shop shop = Shop.toModel(element.data());
+        if(shop.createdFrom == Shop.UN_AVAILABLE){
+          shops.add(shop);
+        }
+
       });
     });
 
@@ -86,8 +154,6 @@ class FbShopAPI {
   }
 
   Future deleteShop(Shop shop) async {
-    FirebaseStorage storage = FirebaseStorage.instance;
-    storage.ref(shop.logo).delete();
     return FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).doc(shop.shopId).delete();
   }
 

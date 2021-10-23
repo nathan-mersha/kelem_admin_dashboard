@@ -35,6 +35,7 @@ class Product {
   static const String META_DATA = "metaData";
   static const String PUBLISHED_STATUS = "publishedStatus";
   static const String SHOP = "shop";
+  static const String DELETED = "deleted";
   static const String FIRST_MODIFIED = "firstModified";
   static const String LAST_MODIFIED = "lastModified";
 
@@ -48,7 +49,6 @@ class Product {
   String category;
   String subCategory;
   String authorOrManufacturer;
-
   num price;
   num regularPrice;
   List<dynamic> tag;
@@ -62,6 +62,7 @@ class Product {
   dynamic metaData;
   String publishedStatus;
   Shop shop;
+  bool deleted;
   DateTime firstModified;
   DateTime lastModified;
 
@@ -89,6 +90,7 @@ class Product {
       this.metaData,
       this.publishedStatus = UN_AVAILABLE,
       required this.shop,
+        this.deleted = false,
       required this.firstModified,
       required this.lastModified});
 
@@ -117,9 +119,11 @@ class Product {
       META_DATA: product.metaData,
       PUBLISHED_STATUS: product.publishedStatus,
       SHOP: Shop.toMap(product.shop),
+      DELETED: product.deleted,
       FIRST_MODIFIED: product.firstModified.toIso8601String(),
       LAST_MODIFIED: product.lastModified.toIso8601String()
     };
+
   }
 
   /// Converts Map to Model
@@ -148,10 +152,13 @@ class Product {
           metaData: map[META_DATA],
           publishedStatus: map[PUBLISHED_STATUS].toString(),
           shop: map[SHOP] == null ? Shop(firstModified: DateTime.now(), lastModified: DateTime.now()) : Shop.toModel(map[SHOP]),
+          deleted: map[DELETED] == null ? false : map[DELETED],
           firstModified: DateTime.parse(map[FIRST_MODIFIED] ?? DateTime.now().toIso8601String()),
           lastModified: DateTime.parse(map[LAST_MODIFIED] ?? DateTime.now().toIso8601String()));
     } catch (e) {
+      print("Exception while converting to mapp ---------------------- ");
       print(e);
+      print("Exception ends");
       return Product(
         firstModified: DateTime.now(),
         lastModified: DateTime.now(),

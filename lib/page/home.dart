@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:product_approval_dashboard/db/k_shared_preference.dart';
 import 'package:product_approval_dashboard/page/contact_us.dart';
+import 'package:product_approval_dashboard/page/shop_by_users.dart';
 import 'package:product_approval_dashboard/page/sync_report_page.dart';
 import 'package:product_approval_dashboard/page/product_approval.dart';
 import 'package:product_approval_dashboard/page/settings.dart';
@@ -38,9 +39,14 @@ class _HomePageState extends State<HomePage> {
       CHILD: ProductApprovalPage(),
     },
     {
-      NAME: "Shop",
-      ICON_DATA: Icons.storefront,
+      NAME: "Shops from telegram",
+      ICON_DATA: Icons.send_and_archive,
       CHILD: ShopPage(),
+    },
+    {
+      NAME: "Shop created by users",
+      ICON_DATA: Icons.store,
+      CHILD: ShopByUsersPage(),
     },
     {
       NAME: "Sync report",
@@ -64,7 +70,7 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  int selectedMenuIndex = 1; // set to product approval page (default)
+  int selectedMenuIndex = 4; // set to product approval page (default)
   late KSharedPreference kSharedPreference;
   String userName = "";
   String userImage = "";

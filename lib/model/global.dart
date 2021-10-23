@@ -206,6 +206,7 @@ class SubscriptionPackage {
 class FeaturesConfig {
   /// Defines key values to extract from a map
   static const String BUY_CREDIT = "buyCredit";
+  static const String CLAIM_GIFT = "claimGift";
   static const String WALLET = "wallet";
   static const String TRANSACTIONS = "transactions";
   static const String SHOP = "shop";
@@ -224,6 +225,7 @@ class FeaturesConfig {
   static const String CASH_OUT_SUPPORT_BANKS = "cashOutSupportBanks";
   static const String TIN = "tin";
 
+  bool claimGift;
   bool aboutUs;
   bool bestSellers;
   bool buyCredit;
@@ -248,6 +250,7 @@ class FeaturesConfig {
 
 
   FeaturesConfig({
+    required this.claimGift,
     required this.buyCredit,
     required this.wallet,
     required this.transactions,
@@ -271,6 +274,7 @@ class FeaturesConfig {
   /// Converts Model to Map
   static Map<String, dynamic> toMap(FeaturesConfig featuresConfig) {
     return {
+      CLAIM_GIFT:  featuresConfig.claimGift,
       BUY_CREDIT: featuresConfig.buyCredit,
       WALLET: featuresConfig.wallet,
       TRANSACTIONS: featuresConfig.transactions,
@@ -295,6 +299,7 @@ class FeaturesConfig {
   /// Converts Map to Model
   static FeaturesConfig toModel(Map<String, dynamic> map) {
     return FeaturesConfig(
+      claimGift: map[CLAIM_GIFT],
       buyCredit: map[BUY_CREDIT],
       wallet: map[WALLET],
       transactions: map[TRANSACTIONS],

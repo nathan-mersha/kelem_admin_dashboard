@@ -50,6 +50,7 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
 
   @override
   Widget build(BuildContext context) {
+    // firebaseAPI.updateProductsDeletedFlag();
     return Column(
       children: [
         Expanded(

@@ -66,6 +66,10 @@ class _SettingsPageState extends State<SettingsPage> {
   int selectedSubscriptionIndex = 0;
   int selectedBankConfigIndex = 0;
 
+  void changeAllUnknownToOther(){
+    FbProductAPI fbProductAPI = FbProductAPI();
+    fbProductAPI.updateUnknownProducts();
+  }
   @override
   void initState() {
     super.initState();
@@ -74,6 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    // changeAllUnknownToOther();
     return _globalConfigInitialized
         ? Row(
             children: [
@@ -228,8 +233,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter at least one subcategory';
-                      } else if (!value.contains("unknown")) {
-                        return 'unknown subcategory is required';
+                      } else if (!value.contains("other")) {
+                        return 'other subcategory is required';
                       }
                       return null;
                     },
@@ -501,9 +506,18 @@ class _SettingsPageState extends State<SettingsPage> {
     if (_formCreateCategoryKey.currentState!.validate()) {
       String name = _categoryNameController.text;
       String icon = _categoryIconController.text;
+
       List<String> subCategories = _subCategoryNameController.text.isEmpty ? [] : _subCategoryNameController.text.split(",");
 
-      Category newCategory = Category(name: name, icon: icon, subCategories: subCategories);
+      // cleaning up duplicate subcategories
+      List<String> subCategoriesCleanedUp = [];
+      subCategories.forEach((element) {
+        if(!subCategoriesCleanedUp.contains(element.toLowerCase())){
+          subCategoriesCleanedUp.add(element.toLowerCase());
+        }
+      });
+
+      Category newCategory = Category(name: name, icon: icon, subCategories: subCategoriesCleanedUp);
       setState(() {
         globalConfig.categories.add(newCategory);
         clearCategoryCreatorFields();
@@ -518,8 +532,17 @@ class _SettingsPageState extends State<SettingsPage> {
       Category selectedCategory = globalConfig.categories[selectedCategoryIndex];
       selectedCategory.name = _categoryNameController.text;
       selectedCategory.icon = selectedCategory.icon;
-      selectedCategory.subCategories = _subCategoryNameController.text.split(",");
+      List<String> subCategories = _subCategoryNameController.text.split(",");
 
+      // cleaning up duplicate subcategories
+      List<String> subCategoriesCleanedUp = [];
+      subCategories.forEach((element) {
+        if(!subCategoriesCleanedUp.contains(element.toLowerCase())){
+          subCategoriesCleanedUp.add(element.toLowerCase());
+        }
+      });
+
+      selectedCategory.subCategories = subCategoriesCleanedUp;
       setState(() {
         globalConfig.categories.removeAt(selectedCategoryIndex);
         globalConfig.categories.add(selectedCategory);

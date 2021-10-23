@@ -13,12 +13,12 @@ import 'package:product_approval_dashboard/model/shop.dart';
 import 'package:product_approval_dashboard/widget/loading.dart';
 import 'package:product_approval_dashboard/widget/stat_card.dart';
 
-class ShopPage extends StatefulWidget {
+class ShopByUsersPage extends StatefulWidget {
   @override
-  _ShopPageState createState() => _ShopPageState();
+  _ShopByUsersPageState createState() => _ShopByUsersPageState();
 }
 
-class _ShopPageState extends State<ShopPage> {
+class _ShopByUsersPageState extends State<ShopByUsersPage> {
   final _formKey = GlobalKey<FormState>();
   static const String MODE_CREATE = "mode_create";
   static const String MODE_UPDATE = "mode_update";
@@ -37,15 +37,13 @@ class _ShopPageState extends State<ShopPage> {
   TextEditingController _nameController = TextEditingController(); // r
   TextEditingController _primaryPhoneController = TextEditingController(); // r
   TextEditingController _secondaryPhoneController = TextEditingController();
-  TextEditingController _telegramChannelLinkController = TextEditingController();
-  TextEditingController _telegramChannelIdController = TextEditingController();
+
   TextEditingController _userIdController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _rankController = TextEditingController();
   TextEditingController _websiteController = TextEditingController();
   TextEditingController _physicalAddressController = TextEditingController();
   TextEditingController _coOrdinatesController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
 
   List<Shop> shops = [];
   List<String> categories = [];
@@ -59,6 +57,7 @@ class _ShopPageState extends State<ShopPage> {
   void initState() {
     super.initState();
     initializeData();
+
   }
 
   @override
@@ -67,84 +66,84 @@ class _ShopPageState extends State<ShopPage> {
       children: [
         Expanded(
             child: Container(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                  flex: 1,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    child: buildProductTable(),
-                  )),
-              Expanded(
-                  flex: 2,
-                  child: Column(
-                    children: [
-                      // stat
-                      Expanded(
-                          flex: 1,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(
-                                child: StatCard(
-                                  title: "Shops",
-                                  description: "All shops in database",
-                                  stat: shops.length,
-                                  icon: Icon(Icons.error_outline_rounded, size: 25, color: Theme.of(context).primaryColor),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: StatCard(
-                                  title: "Verified",
-                                  description: "Verified Shops",
-                                  stat: shops.where((element) => element.isVerified == true).length,
-                                  icon: Icon(Icons.check, size: 25, color: Theme.of(context).primaryColor),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: StatCard(
-                                  title: "Un Verified",
-                                  description: "Un Verified shops",
-                                  stat: shops.where((element) => element.isVerified == false).length,
-                                  icon: Icon(Icons.all_inclusive, size: 25, color: Theme.of(context).primaryColor),
-                                ),
-                              )
-                            ],
-                          )),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        child: buildProductTable(),
+                      )),
+                  Expanded(
+                      flex: 2,
+                      child: Column(
+                        children: [
+                          // stat
+                          Expanded(
+                              flex: 1,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Expanded(
+                                    child: StatCard(
+                                      title: "Shops",
+                                      description: "All shops in database",
+                                      stat: shops.length,
+                                      icon: Icon(Icons.error_outline_rounded, size: 25, color: Theme.of(context).primaryColor),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: StatCard(
+                                      title: "Verified",
+                                      description: "Verified Shops",
+                                      stat: shops.where((element) => element.isVerified == true).length,
+                                      icon: Icon(Icons.check, size: 25, color: Theme.of(context).primaryColor),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: StatCard(
+                                      title: "Un Verified",
+                                      description: "Un Verified shops",
+                                      stat: shops.where((element) => element.isVerified == false).length,
+                                      icon: Icon(Icons.all_inclusive, size: 25, color: Theme.of(context).primaryColor),
+                                    ),
+                                  )
+                                ],
+                              )),
 
-                      Expanded(
-                        flex: 5,
-                        child: Container(
-                          margin: EdgeInsets.only(top: 12),
-                          child: Row(
-                            children: [
-                              Expanded(flex: 2, child: buildProductDetail()),
-                              SizedBox(
-                                width: 10,
+                          Expanded(
+                            flex: 5,
+                            child: Container(
+                              margin: EdgeInsets.only(top: 12),
+                              child: Row(
+                                children: [
+                                  Expanded(flex: 2, child: buildProductDetail()),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(flex: 1, child: buildProductImageView())
+                                ],
                               ),
-                              Expanded(flex: 1, child: buildProductImageView())
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ))
-            ],
-          ),
-        )),
+                            ),
+                          )
+                        ],
+                      ))
+                ],
+              ),
+            )),
       ],
     );
   }
 
   void initializeData() async {
-    List<Shop> data = await firebaseAPI.getShops();
+    List<Shop> data = await firebaseAPI.getShopsCreatedByUsers();
     List<String> categoriesData = [];
     List<String> subscriptionPackagesData = [];
 
@@ -183,8 +182,7 @@ class _ShopPageState extends State<ShopPage> {
     selectedShop.name = _nameController.text;
     selectedShop.primaryPhone = _primaryPhoneController.text;
     selectedShop.secondaryPhone = _secondaryPhoneController.text;
-    selectedShop.telegramChannelLink = _telegramChannelLinkController.text;
-    selectedShop.telegramChannelId = _telegramChannelIdController.text;
+
     selectedShop.userId = _userIdController.text;
     selectedShop.email = _emailController.text;
     selectedShop.rank = num.parse(_rankController.text);
@@ -192,22 +190,19 @@ class _ShopPageState extends State<ShopPage> {
     selectedShop.physicalAddress = _physicalAddressController.text;
 
     selectedShop.coOrdinates = _coOrdinatesController.text.split(",");
-    selectedShop.description = _descriptionController.text;
   }
 
   void setDataToForm() {
     _nameController.text = selectedShop.name;
     _primaryPhoneController.text = selectedShop.primaryPhone;
     _secondaryPhoneController.text = selectedShop.secondaryPhone;
-    _telegramChannelLinkController.text = selectedShop.telegramChannelLink;
-    _telegramChannelIdController.text = selectedShop.telegramChannelId;
+
     _userIdController.text = selectedShop.userId;
     _emailController.text = selectedShop.email;
     _rankController.text = selectedShop.rank.toString();
     _websiteController.text = selectedShop.website;
     _physicalAddressController.text = selectedShop.physicalAddress;
     _coOrdinatesController.text = selectedShop.coOrdinates.join(",");
-    _descriptionController.text = selectedShop.description;
   }
 
   Widget buildProductTable() {
@@ -233,79 +228,79 @@ class _ShopPageState extends State<ShopPage> {
                 child: shops.length == 0
                     ? Loading()
                     : SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child:
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child:
 
-                          DataTable(
-                              dividerThickness: 0,
-                              columns: const <DataColumn>[
+                    DataTable(
+                        dividerThickness: 0,
+                        columns: const <DataColumn>[
 
-                                DataColumn(
-                                  label: Text(
-                                    'Name',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'Category',
-                                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'Phone',
-                                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                              ],
-                              rows: shops
-                                  .map((Shop e) => DataRow(cells: [
+                          DataColumn(
+                            label: Text(
+                              'Name',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Category',
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Phone',
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ],
+                        rows: shops
+                            .map((Shop e) => DataRow(cells: [
 
 
-                                DataCell(
-                                  Container(
-                                    // width: 100,
-                                    child: Text(
-                                      e.name,
-                                      overflow: TextOverflow.clip,
-                                      style: TextStyle(fontSize: 13, color: Colors.black54),
-                                      maxLines: 1,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    onItemSelected(e);
-                                  },
+                          DataCell(
+                            Container(
+                              // width: 100,
+                              child: Text(
+                                e.name,
+                                overflow: TextOverflow.clip,
+                                style: TextStyle(fontSize: 13, color: Colors.black54),
+                                maxLines: 1,
+                              ),
+                            ),
+                            onTap: () {
+                              onItemSelected(e);
+                            },
+                          ),
+                          DataCell(
+                              Text(
+                                e.category.toString(),
+                                style: TextStyle(fontSize: 13, color: Colors.black54),
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                              ), onTap: () {
+                            onItemSelected(e);
+                          }),
+                          DataCell(
+                              Container(
+                                child: Text(
+                                  e.primaryPhone,
+                                  style: TextStyle(fontSize: 13, color: Colors.black54),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.clip,
                                 ),
-                                        DataCell(
-                                            Text(
-                                              e.category.toString(),
-                                              style: TextStyle(fontSize: 13, color: Colors.black54),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.clip,
-                                            ), onTap: () {
-                                          onItemSelected(e);
-                                        }),
-                                        DataCell(
-                                            Container(
-                                              child: Text(
-                                                e.primaryPhone,
-                                                style: TextStyle(fontSize: 13, color: Colors.black54),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.clip,
-                                              ),
-                                            ), onTap: () {
-                                          onItemSelected(e);
-                                        }),
-                                      ]))
-                                  .toList()),
-                        ),
-                      ))
+                              ), onTap: () {
+                            onItemSelected(e);
+                          }),
+                        ]))
+                            .toList()),
+                  ),
+                ))
           ],
         ),
       ),
@@ -352,16 +347,16 @@ class _ShopPageState extends State<ShopPage> {
                     SizedBox(width: 10),
                     mode == MODE_UPDATE
                         ? AbsorbPointer(
-                            absorbing: busy,
-                            child: IconButton(
-                                onPressed: () {
-                                  onDeleteShop(selectedShop);
-                                },
-                                icon: Icon(
-                                  Icons.delete_forever,
-                                  color: Colors.redAccent,
-                                )),
-                          )
+                      absorbing: busy,
+                      child: IconButton(
+                          onPressed: () {
+                            onDeleteShop(selectedShop);
+                          },
+                          icon: Icon(
+                            Icons.delete_forever,
+                            color: Colors.redAccent,
+                          )),
+                    )
                         : Container()
                   ],
                 )
@@ -371,318 +366,269 @@ class _ShopPageState extends State<ShopPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
 
-              IconButton(
-                  onPressed: () {
-                    onDeleteProductsOfShop(selectedShop,Product.UN_APPROVED);
-                  },
-                  tooltip: "delete un-approved products",
-                  icon: Icon(
-                    Icons.auto_delete_outlined,
-                    color: Colors.orange,
-                  )),
+                IconButton(
+                    onPressed: () {
+                      onDeleteProductsOfShop(selectedShop,Product.UN_APPROVED);
+                    },
+                    tooltip: "delete un-approved products",
+                    icon: Icon(
+                      Icons.auto_delete_outlined,
+                      color: Colors.orange,
+                    )),
 
-              IconButton(
-                  onPressed: () {
-                    onDeleteProductsOfShop(selectedShop,Product.APPROVED);
-                  },
-                  tooltip: "delete approved products",
-                  icon: Icon(
-                    Icons.delete_sweep_outlined,
-                    color: Color(0xff9299cd)
-                  )),
+                IconButton(
+                    onPressed: () {
+                      onDeleteProductsOfShop(selectedShop,Product.APPROVED);
+                    },
+                    tooltip: "delete approved products",
+                    icon: Icon(
+                        Icons.delete_sweep_outlined,
+                        color: Color(0xff9299cd)
+                    )),
 
-              IconButton(
-                  onPressed: () {
-                    onDeleteProductsOfShop(selectedShop,Product.ALL);
-                  },
-                  tooltip: "delete all products",
-                  icon: Icon(
-                    Icons.delete_outline_rounded,
-                    color: Color(0xffe77681)
-                  )),
+                IconButton(
+                    onPressed: () {
+                      onDeleteProductsOfShop(selectedShop,Product.ALL);
+                    },
+                    tooltip: "delete all products",
+                    icon: Icon(
+                        Icons.delete_outline_rounded,
+                        color: Color(0xffe77681)
+                    )),
 
-            ],) ,): Container(),
+              ],) ,): Container(),
             SizedBox(
               height: 20,
             ),
             Expanded(
                 child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-
-                      controller: _nameController,
-
-                      decoration: InputDecoration(hintText: "name", labelText: "name"),
-                      // The validator receives the text that the user has entered.
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter name';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      height: 80,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "category",
-                                  style: TextStyle(color: Colors.black38),
-                                ),
-                                DropdownButton<String>(
-                                  items: categories.map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: new Text(value),
-                                    );
-                                  }).toList(),
-                                  value: selectedShop.category,
-                                  isExpanded: true,
-                                  hint: Text(
-                                    "categories",
-                                    style: TextStyle(fontSize: 14, color: Colors.black54),
-                                    textAlign: TextAlign.end,
-                                  ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedShop.category = value!;
-                                    });
-                                  },
-                                )
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 30,
-                          ),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "subscription",
-                                  style: TextStyle(color: Colors.black38),
-                                ),
-                                DropdownButton<String>(
-                                  items: subscriptionPackages.map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: new Text(value),
-                                    );
-                                  }).toList(),
-                                  value: selectedShop.subscriptionPackage,
-                                  isExpanded: true,
-                                  hint: Text(
-                                    "subscription",
-                                    style: TextStyle(fontSize: 14, color: Colors.black54),
-                                    textAlign: TextAlign.end,
-                                  ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedShop.subscriptionPackage = value!;
-                                    });
-                                  },
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
+                  scrollDirection: Axis.vertical,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              "is verified",
-                              style: TextStyle(color: Colors.black54),
-                            ),
-                            Switch(
-                              value: selectedShop.isVerified,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedShop.isVerified = value;
-                                });
-                              },
-                            ),
-                          ],
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        TextFormField(
+                          style: TextStyle(fontSize: 14),
+
+                          controller: _nameController,
+
+                          decoration: InputDecoration(hintText: "name", labelText: "name"),
+                          // The validator receives the text that the user has entered.
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter name';
+                            }
+                            return null;
+                          },
                         ),
                         SizedBox(
-                          width: 30,
+                          height: 20,
+                        ),
+                        SizedBox(
+                          height: 80,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "category",
+                                      style: TextStyle(color: Colors.black38),
+                                    ),
+                                    DropdownButton<String>(
+                                      items: categories.map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: new Text(value),
+                                        );
+                                      }).toList(),
+                                      value: selectedShop.category,
+                                      isExpanded: true,
+                                      hint: Text(
+                                        "categories",
+                                        style: TextStyle(fontSize: 14, color: Colors.black54),
+                                        textAlign: TextAlign.end,
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedShop.category = value!;
+                                        });
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 30,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "subscription",
+                                      style: TextStyle(color: Colors.black38),
+                                    ),
+                                    DropdownButton<String>(
+                                      items: subscriptionPackages.map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: new Text(value),
+                                        );
+                                      }).toList(),
+                                      value: selectedShop.subscriptionPackage,
+                                      isExpanded: true,
+                                      hint: Text(
+                                        "subscription",
+                                        style: TextStyle(fontSize: 14, color: Colors.black54),
+                                        textAlign: TextAlign.end,
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedShop.subscriptionPackage = value!;
+                                        });
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              "is virtual",
-                              style: TextStyle(color: Colors.black54),
+                            Row(
+                              children: [
+                                Text(
+                                  "is verified",
+                                  style: TextStyle(color: Colors.black54),
+                                ),
+                                Switch(
+                                  value: selectedShop.isVerified,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedShop.isVerified = value;
+                                    });
+                                  },
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
                             ),
-                            Switch(
-                              value: selectedShop.isVirtual,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedShop.isVirtual = value;
-                                });
-                              },
+                            SizedBox(
+                              width: 30,
                             ),
+                            Row(
+                              children: [
+                                Text(
+                                  "is virtual",
+                                  style: TextStyle(color: Colors.black54),
+                                ),
+                                Switch(
+                                  value: selectedShop.isVirtual,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedShop.isVirtual = value;
+                                    });
+                                  },
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            )
                           ],
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        )
+                        ),
+                        TextFormField(
+                          style: TextStyle(fontSize: 14),
+                          controller: _primaryPhoneController,
+                          decoration: InputDecoration(hintText: "primary phone", labelText: "primary phone"),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter primary phone';
+                            } else if (value.length < 10) {
+                              return "Please enter valid phone number";
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          style: TextStyle(fontSize: 14),
+
+                          controller: _secondaryPhoneController,
+                          decoration: InputDecoration(
+                            hintText: "secondary phone",
+                            labelText: "secondary phone",
+                          ),
+                          // The validator receives the text that the user has entered.
+                        ),
+
+                        TextFormField(
+                          style: TextStyle(fontSize: 14),
+
+                          controller: _userIdController,
+                          decoration: InputDecoration(
+                            hintText: "user id",
+                            labelText: "user id",
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter user id';
+                            } else if (value.length != 20) {
+                              return "user id length must be 20";
+                            }
+                            return null;
+                          },
+                          // The validator receives the text that the user has entered.
+                        ),
+                        TextFormField(
+                          style: TextStyle(fontSize: 14),
+                          controller: _emailController,
+                          decoration: InputDecoration(hintText: "email", labelText: "email"),
+                          // The validator receives the text that the user has entered.
+                        ),
+                        TextFormField(
+                          style: TextStyle(fontSize: 14),
+                          controller: _rankController,
+                          validator: (value) {
+
+                            num? parsedRank = num.tryParse(value!);
+
+                            if (value.isEmpty) {
+                              return 'Please enter rank value (lowest is 1)';
+                            }else if (parsedRank == null) {
+                              return "Rank must be a number (lowest is 1)";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(hintText: "rank", labelText: "rank"),
+                          // The validator receives the text that the user has entered.
+                        ),
+                        TextFormField(
+                          style: TextStyle(fontSize: 14),
+                          controller: _websiteController,
+                          decoration: InputDecoration(hintText: "website", labelText: "website"),
+                        ),
+                        TextFormField(
+                          style: TextStyle(fontSize: 14),
+                          controller: _physicalAddressController,
+                          decoration: InputDecoration(hintText: "physical address", labelText: "physical address"),
+                        ),
+                        TextFormField(
+                          style: TextStyle(fontSize: 14),
+                          controller: _coOrdinatesController,
+                          decoration: InputDecoration(hintText: "co-ordinates", labelText: "co-ordinates"),
+                        ),
+
+
                       ],
                     ),
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-                      controller: _primaryPhoneController,
-                      decoration: InputDecoration(hintText: "primary phone", labelText: "primary phone"),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter primary phone';
-                        } else if (value.length < 10) {
-                          return "Please enter valid phone number";
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-
-                      controller: _secondaryPhoneController,
-                      decoration: InputDecoration(
-                        hintText: "secondary phone",
-                        labelText: "secondary phone",
-                      ),
-                      // The validator receives the text that the user has entered.
-                    ),
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-
-                      controller: _telegramChannelLinkController,
-                      decoration: InputDecoration(
-                        hintText: "telegram channel link",
-                        labelText: "telegram channel link",
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter telegram channel link';
-                        } else if (!value.contains("t.me")) {
-                          return "value must be proper telegram channel link";
-                        }
-                        return null;
-                      },
-                      // The validator receives the text that the user has entered.
-                    ),
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-
-                      controller: _telegramChannelIdController,
-                      decoration: InputDecoration(
-                        hintText: "telegram channel id",
-                        labelText: "telegram channel id",
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter telegram channel id';
-                        }
-                        return null;
-                      },
-                      // The validator receives the text that the user has entered.
-                    ),
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-
-                      controller: _userIdController,
-                      decoration: InputDecoration(
-                        hintText: "user id",
-                        labelText: "user id",
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter user id';
-                        } else if (value.length != 20) {
-                          return "user id length must be 20";
-                        }
-                        return null;
-                      },
-                      // The validator receives the text that the user has entered.
-                    ),
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-                      controller: _emailController,
-                      decoration: InputDecoration(hintText: "email", labelText: "email"),
-                      // The validator receives the text that the user has entered.
-                    ),
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-                      controller: _rankController,
-                      validator: (value) {
-
-                        num? parsedRank = num.tryParse(value!);
-
-                        if (value.isEmpty) {
-                          return 'Please enter rank value (lowest is 1)';
-                        }else if (parsedRank == null) {
-                          return "Rank must be a number (lowest is 1)";
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(hintText: "rank", labelText: "rank"),
-                      // The validator receives the text that the user has entered.
-                    ),
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-                      controller: _websiteController,
-                      decoration: InputDecoration(hintText: "website", labelText: "website"),
-                    ),
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-                      controller: _physicalAddressController,
-                      decoration: InputDecoration(hintText: "physical address", labelText: "physical address"),
-                    ),
-                    TextFormField(
-                      style: TextStyle(fontSize: 14),
-                      controller: _coOrdinatesController,
-                      decoration: InputDecoration(hintText: "co-ordinates", labelText: "co-ordinates"),
-                    ),
-                    TextFormField(
-                      keyboardType: TextInputType.multiline,
-                      minLines: 1,
-                      maxLines: 3,
-                      controller: _descriptionController,
-                      style: TextStyle(fontSize: 14),
-                      decoration: InputDecoration(
-                        hintText: "description",
-                        labelText: "description",
-                      ),
-                      // The validator receives the text that the user has entered.
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter description';
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            )),
+                  ),
+                )),
             Container(
               // padding: EdgeInsets.only(top: 40),
               margin: EdgeInsets.only(left: 150, right: 150, top: 20, bottom: 30),
@@ -932,7 +878,6 @@ class _ShopPageState extends State<ShopPage> {
       busy = true;
     });
     setDetailData();
-    selectedShop.createdFrom = "telegram";
     await firebaseAPI.updateShop(selectedShop);
     await tsAPI.indexShop(selectedShop);
     clearFormData();
@@ -966,7 +911,6 @@ class _ShopPageState extends State<ShopPage> {
     });
 
     setDetailData();
-    selectedShop.createdFrom = "telegram";
     await firebaseAPI.createShop(selectedShop);
     await tsAPI.indexShop(selectedShop);
     clearFormData();
@@ -985,15 +929,12 @@ class _ShopPageState extends State<ShopPage> {
       _nameController.clear();
       _primaryPhoneController.clear();
       _secondaryPhoneController.clear();
-      _telegramChannelLinkController.clear();
-      _telegramChannelIdController.clear();
       _userIdController.clear();
       _emailController.clear();
       _rankController.clear();
       _websiteController.clear();
       _physicalAddressController.clear();
       _coOrdinatesController.clear();
-      _descriptionController.clear();
 
       selectedShop = Shop(firstModified: DateTime.now(), lastModified: DateTime.now());
     });
@@ -1042,13 +983,13 @@ class _ShopPageState extends State<ShopPage> {
           children: [
             selectedShop.logo == Shop.UN_AVAILABLE
                 ? Image.asset(
-                    "assets/images/image_folder.png",
-                    width: 200,
-                  )
+              "assets/images/image_folder.png",
+              width: 200,
+            )
                 : ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(selectedShop.logo),
-                  ),
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(selectedShop.logo),
+            ),
             SizedBox(
               height: 30,
             ),

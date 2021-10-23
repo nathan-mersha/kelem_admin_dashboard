@@ -25,6 +25,7 @@ class Shop {
   static const String CATEGORY = "category";
   static const String RANK = "rank";
   static const String LOGO = "logo";
+  static const String CREATED_FROM = "createdFrom";
 
   static const String TOTAL_APPROVED_PRODUCTS = "totalApprovedProducts";
   static const String TOTAL_DELETIONS = "totalDeletions";
@@ -55,6 +56,7 @@ class Shop {
   String category;
   num rank;
   dynamic logo;
+  String createdFrom;
 
   num totalApprovedProducts;
   num totalDeletions;
@@ -67,33 +69,37 @@ class Shop {
   DateTime lastModified;
 
   Shop(
-      {this.id = Shop.UN_AVAILABLE,
-      this.telegramChannelId = Shop.UN_AVAILABLE,
-      this.telegramChannelLink = Shop.UN_AVAILABLE,
-      this.shopId = Shop.UN_AVAILABLE,
-      this.userId = Shop.UN_AVAILABLE,
-      this.name = Shop.UN_AVAILABLE,
-      this.primaryPhone = Shop.UN_AVAILABLE,
-      this.secondaryPhone = Shop.UN_AVAILABLE,
-      this.email = Shop.UN_AVAILABLE,
-      this.website = Shop.UN_AVAILABLE,
-      this.physicalAddress = Shop.UN_AVAILABLE,
-      this.coOrdinates = const [],
-      this.isVirtual = false,
-      this.isVerified = false,
-      this.subscriptionPackage = Shop.UN_AVAILABLE,
-      this.description = Shop.UN_AVAILABLE,
-      this.category = Shop.UN_AVAILABLE,
+      {
+        this.id = Shop.UN_AVAILABLE,
+        this.telegramChannelId = Shop.UN_AVAILABLE,
+        this.telegramChannelLink = Shop.UN_AVAILABLE,
+        this.shopId = Shop.UN_AVAILABLE,
+        this.userId = Shop.UN_AVAILABLE,
+        this.name = Shop.UN_AVAILABLE,
+        this.primaryPhone = Shop.UN_AVAILABLE,
+        this.secondaryPhone = Shop.UN_AVAILABLE,
+        this.email = Shop.UN_AVAILABLE,
+        this.website = Shop.UN_AVAILABLE,
+        this.physicalAddress = Shop.UN_AVAILABLE,
+        this.coOrdinates = const [],
+        this.isVirtual = false,
+        this.isVerified = false,
+        this.subscriptionPackage = Shop.UN_AVAILABLE,
+        this.description = Shop.UN_AVAILABLE,
+        this.category = Shop.UN_AVAILABLE,
         this.rank = 1,
-      this.logo = Shop.UN_AVAILABLE,
-      this.totalApprovedProducts = 0,
-      this.totalDeletions = 0,
-      this.totalNoneProducts = 0,
-      this.totalProducts = 0,
-      this.totalUpdates = 0,
+        this.logo = Shop.UN_AVAILABLE,
+        this.createdFrom = Shop.UN_AVAILABLE,
+
+        this.totalApprovedProducts = 0,
+        this.totalDeletions = 0,
+        this.totalNoneProducts = 0,
+        this.totalProducts = 0,
+        this.totalUpdates = 0,
         this.totalPosts = 0,
-      required this.firstModified,
-      required this.lastModified});
+        required this.firstModified,
+        required this.lastModified
+      });
 
   /// Converts Model to Map
   static Map<String, dynamic> toMap(Shop shop) {
@@ -117,6 +123,7 @@ class Shop {
       CATEGORY: shop.category,
       RANK: shop.rank,
       LOGO: shop.logo,
+      CREATED_FROM: shop.createdFrom,
       TOTAL_APPROVED_PRODUCTS: shop.totalApprovedProducts,
       TOTAL_DELETIONS: shop.totalDeletions,
       TOTAL_NONE_PRODUCT_POSTS: shop.totalNoneProducts,
@@ -130,40 +137,36 @@ class Shop {
 
   /// Converts Map to Model
   static Shop toModel(Map<String, dynamic> map) {
-    print(map);
-    try {
-      return Shop(
-          id: map[ID],
-          telegramChannelId: map[TELEGRAM_CHANNEL_ID],
-          telegramChannelLink: map[TELEGRAM_CHANNEL_LINK],
-          shopId: map[SHOP_ID],
-          userId: map[USER_ID],
-          name: map[NAME],
-          primaryPhone: map[PRIMARY_PHONE],
-          secondaryPhone: map[SECONDARY_PHONE],
-          email: map[EMAIL],
-          website: map[WEBSITE],
-          physicalAddress: map[PHYSICAL_ADDRESS],
-          coOrdinates: map[CO_ORDINATES],
-          isVirtual: map[IS_VIRTUAL],
-          isVerified: map[IS_VERIFIED],
-          subscriptionPackage: map[SUBSCRIPTION_PACKAGE],
-          description: map[DESCRIPTION],
-          category: map[CATEGORY],
-          rank: map[RANK] == null ? 1 : num.tryParse(map[RANK].toString()) ?? 1,
-          logo: map[LOGO],
-          totalApprovedProducts: map[TOTAL_APPROVED_PRODUCTS],
-          totalDeletions: map[TOTAL_DELETIONS],
-          totalNoneProducts: map[TOTAL_NONE_PRODUCT_POSTS],
-          totalProducts: map[TOTAL_PRODUCTS],
-          totalUpdates: map[TOTAL_UPDATES],
-          totalPosts: map[TOTAL_POSTS],
-          firstModified: map[FIRST_MODIFIED] == null ? DateTime.now() : DateTime.parse(map[FIRST_MODIFIED]),
-          lastModified: map[LAST_MODIFIED] == null ? DateTime.now() : DateTime.parse(map[LAST_MODIFIED]));
-    } catch (e) {
-      print(e);
-      return Shop(firstModified: DateTime.now(), lastModified: DateTime.now());
-    }
+
+    return Shop(
+        id: map[ID] ?? Shop.UN_AVAILABLE,
+        telegramChannelId: map[TELEGRAM_CHANNEL_ID] ?? Shop.UN_AVAILABLE,
+        telegramChannelLink: map[TELEGRAM_CHANNEL_LINK] ?? Shop.UN_AVAILABLE,
+        shopId: map[SHOP_ID]?? Shop.UN_AVAILABLE,
+        userId: map[USER_ID]?? Shop.UN_AVAILABLE,
+        name: map[NAME]?? Shop.UN_AVAILABLE,
+        primaryPhone: map[PRIMARY_PHONE]?? Shop.UN_AVAILABLE,
+        secondaryPhone: map[SECONDARY_PHONE]?? Shop.UN_AVAILABLE,
+        email: map[EMAIL]?? Shop.UN_AVAILABLE,
+        website: map[WEBSITE]?? Shop.UN_AVAILABLE,
+        physicalAddress: map[PHYSICAL_ADDRESS]?? Shop.UN_AVAILABLE,
+        coOrdinates: map[CO_ORDINATES] ?? [0,0],
+        isVirtual: map[IS_VIRTUAL] ?? true,
+        isVerified: map[IS_VERIFIED] ?? false,
+        subscriptionPackage: map[SUBSCRIPTION_PACKAGE]?? Shop.UN_AVAILABLE,
+        description: map[DESCRIPTION]?? Shop.UN_AVAILABLE,
+        category: map[CATEGORY]?? Shop.UN_AVAILABLE,
+        rank: map[RANK] == null ? 1 : num.tryParse(map[RANK].toString()) ?? 1,
+        logo: map[LOGO]?? Shop.UN_AVAILABLE,
+        createdFrom: map[CREATED_FROM] ?? Shop.UN_AVAILABLE,
+        totalApprovedProducts: map[TOTAL_APPROVED_PRODUCTS] ?? 0,
+        totalDeletions: map[TOTAL_DELETIONS] ?? 0,
+        totalNoneProducts: map[TOTAL_NONE_PRODUCT_POSTS] ?? 0,
+        totalProducts: map[TOTAL_PRODUCTS] ?? 0,
+        totalUpdates: map[TOTAL_UPDATES] ?? 0,
+        totalPosts: map[TOTAL_POSTS] ?? 0,
+        firstModified: map[FIRST_MODIFIED] == null ? DateTime.now() : DateTime.parse(map[FIRST_MODIFIED]),
+        lastModified: map[LAST_MODIFIED] == null ? DateTime.now() : DateTime.parse(map[LAST_MODIFIED]));
   }
 
   /// Changes List of Map to List of Model

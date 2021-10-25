@@ -239,6 +239,15 @@ class _ShopByUsersPageState extends State<ShopByUsersPage> {
 
                           DataColumn(
                             label: Text(
+                              'Ver',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
                               'Name',
                               style: TextStyle(
                                 fontSize: 13,
@@ -262,6 +271,15 @@ class _ShopByUsersPageState extends State<ShopByUsersPage> {
                         rows: shops
                             .map((Shop e) => DataRow(cells: [
 
+                          DataCell(
+                            Container(
+                              // width: 100,
+                              child: Icon(Icons.verified_rounded, color: e.isVerified ? Colors.green : Colors.black38,),
+                            ),
+                            onTap: () {
+                              onItemSelected(e);
+                            },
+                          ),
 
                           DataCell(
                             Container(
@@ -578,8 +596,6 @@ class _ShopByUsersPageState extends State<ShopByUsersPage> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter user id';
-                            } else if (value.length != 20) {
-                              return "user id length must be 20";
                             }
                             return null;
                           },

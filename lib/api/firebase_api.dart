@@ -13,12 +13,16 @@ import 'package:http/http.dart' as http;
 class FbProductAPI {
   Future<List<Product>> getUnApprovedProducts() async {
     List<Product> unApprovedProducts = [];
-    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('approved', isEqualTo: false).where('deleted',isEqualTo: false).limit(100).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('approved', isEqualTo: false).limit(200).get().then((QuerySnapshot<Map<String, dynamic>> value) {
 
 
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
         Product product = Product.toModel(element.data());
-        unApprovedProducts.add(product);
+
+        if(!product.deleted){
+          unApprovedProducts.add(product);
+        }
+
       });
 
     });

@@ -128,43 +128,32 @@ class Product {
 
   /// Converts Map to Model
   static Product toModel(dynamic map) {
-    try {
-      return Product(
-          telegramPostId: map[TELEGRAM_POST_ID].toString(),
-          telegramShopId: map[TELEGRAM_SHOP_ID].toString(),
-          telegramRawPost: map[TELEGRAM_RAW_POST].toString(),
-          approved: map[APPROVED],
-          productId: map[PRODUCT_ID].toString(),
-          name: map[NAME].toString(),
-          keywords: map[KEYWORDS],
-          category: map[CATEGORY].toString(),
-          subCategory: map[SUB_CATEGORY].toString(),
-          authorOrManufacturer: map[AUTHOR_OR_MANUFACTURER].toString(),
-          price: map[PRICE],
-          regularPrice: map[REGULAR_PRICE],
-          tag: map[TAG],
-          description: map[DESCRIPTION].toString(),
-          rating: map[RATING] ?? 0.0,
-          reference: map[REFERENCE].toString(),
-          availableStock: map[AVAILABLE_STOCK],
-          image: map[IMAGE],
-          deliverable: map[DELIVERABLE],
-          metaData: map[META_DATA],
-          publishedStatus: map[PUBLISHED_STATUS].toString(),
-          shop: map[SHOP] == null ? Shop(firstModified: DateTime.now(), lastModified: DateTime.now()) : Shop.toModel(map[SHOP]),
-          deleted: map[DELETED] == null ? false : map[DELETED],
-          firstModified: DateTime.parse(map[FIRST_MODIFIED] ?? DateTime.now().toIso8601String()),
-          lastModified: DateTime.parse(map[LAST_MODIFIED] ?? DateTime.now().toIso8601String()));
-    } catch (e) {
-      print("Exception while converting to mapp ---------------------- ");
-      print(e);
-      print("Exception ends");
-      return Product(
-        firstModified: DateTime.now(),
-        lastModified: DateTime.now(),
-        shop: Shop(firstModified: DateTime.now(), lastModified: DateTime.now()),
-      );
-    }
+    return Product(
+        telegramPostId: map[TELEGRAM_POST_ID].toString(),
+        telegramShopId: map[TELEGRAM_SHOP_ID].toString(),
+        telegramRawPost: map[TELEGRAM_RAW_POST].toString(),
+        approved: map[APPROVED],
+        productId: map[PRODUCT_ID].toString(),
+        name: map[NAME].toString(),
+        keywords: map[KEYWORDS] == null ? const [] : map[KEYWORDS],
+        category: map[CATEGORY].toString(),
+        subCategory: map[SUB_CATEGORY].toString(),
+        authorOrManufacturer: map[AUTHOR_OR_MANUFACTURER].toString(),
+        price: map[PRICE] ?? 0.0,
+        regularPrice: map[REGULAR_PRICE] ?? map[PRICE] ?? 0.0,
+        tag: map[TAG].length == 0 ? [map[CATEGORY].toString(), map[SUB_CATEGORY].toString()] : map[TAG],
+        description: map[DESCRIPTION].toString(),
+        rating: map[RATING] ?? 0.0,
+        reference: map[REFERENCE] ?? "",
+        availableStock: map[AVAILABLE_STOCK],
+        image: map[IMAGE]  == null ? const [] : map[IMAGE],
+        deliverable: map[DELIVERABLE],
+        metaData: map[META_DATA],
+        publishedStatus: map[PUBLISHED_STATUS].toString(),
+        shop: map[SHOP] == null ? Shop(firstModified: DateTime.now(), lastModified: DateTime.now()) : Shop.toModel(map[SHOP]),
+        deleted: map[DELETED] == null ? false : map[DELETED],
+        firstModified: DateTime.parse(map[FIRST_MODIFIED] ?? DateTime.now().toIso8601String()),
+        lastModified: DateTime.parse(map[LAST_MODIFIED] ?? DateTime.now().toIso8601String()));
   }
 
   /// Changes List of Map to List of Model

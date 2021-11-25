@@ -13,27 +13,19 @@ import 'package:http/http.dart' as http;
 class FbProductAPI {
   Future<List<Product>> getUnApprovedProducts() async {
     List<Product> unApprovedProducts = [];
-    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('approved', isEqualTo: false).limit(200).get().then((QuerySnapshot<Map<String, dynamic>> value) {
-
-
+    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('approved', isEqualTo: false).limit(100).get().then((QuerySnapshot<Map<String, dynamic>> value) {
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
         Product product = Product.toModel(element.data());
-
-        if(!product.deleted){
-          unApprovedProducts.add(product);
-        }
-
+        unApprovedProducts.add(product);
       });
-
     });
 
     return unApprovedProducts;
   }
 
-  Future updateProductsDeletedFlag() async{
+  Future updateProductsDeletedFlag() async {
     List<Product> unApprovedProducts = [];
     await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).get().then((QuerySnapshot<Map<String, dynamic>> value) {
-
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
         Product product = Product.toModel(element.data());
         unApprovedProducts.add(product);
@@ -41,15 +33,12 @@ class FbProductAPI {
     });
 
     unApprovedProducts.forEach((Product element) {
-
       element.deleted = false;
       updateProduct(element);
-
     });
-
   }
 
-  Future<List<Product>> updateUnknownProducts() async{
+  Future<List<Product>> updateUnknownProducts() async {
     List<Product> unApprovedProducts = [];
     await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('subCategory', isEqualTo: "unknown").limit(10).get().then((QuerySnapshot<Map<String, dynamic>> value) {
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
@@ -78,8 +67,18 @@ class FbProductAPI {
     return FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).doc(product.productId).update(Product.toMap(product));
   }
 
-  Future deleteTotalyProduct(Product product) async{
+  Future deleteDeletedProducts() async{
+    print("Deleting products totally ------ ");
+    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('deleted', isEqualTo:true).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+      value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
+        Product product = Product.toModel(element.data());
+        deleteTotalyProduct(product);
+      });
+    });
+    print("completed deleting product");
+  }
 
+  Future deleteTotalyProduct(Product product) async {
     FirebaseStorage storage = FirebaseStorage.instance;
 
     product.image.forEach((imgPath) async {
@@ -87,6 +86,11 @@ class FbProductAPI {
     });
 
     return FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).doc(product.productId).delete();
+  }
+
+  Future createDeletedProduct(Product product) async{
+    CollectionReference ref = FirebaseFirestore.instance.collection("deletedProduct");
+    return ref.doc(product.productId).set(Product.toMap(product));
   }
 
   Future deleteProductsOfShop(Shop shop, String deleteType) async {
@@ -102,7 +106,6 @@ class FbProductAPI {
           .get();
     }
 
-    print("deleting documents lenght : ${snapshot.docs.length.toString()}");
     for (var doc in snapshot.docs) {
       Product product = Product.toModel(doc.data());
       deleteTotalyProduct(product);
@@ -124,7 +127,7 @@ class FbShopAPI {
 
   Future<List<Shop>> getShops() async {
     List<Shop> shops = [];
-    await FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).where(Shop.CREATED_FROM,isEqualTo: "telegram").get().then((QuerySnapshot<Map<String, dynamic>> value) {
+    await FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).where(Shop.CREATED_FROM, isEqualTo: "telegram").get().then((QuerySnapshot<Map<String, dynamic>> value) {
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
         Shop shop = Shop.toModel(element.data());
         shops.add(shop);
@@ -134,45 +137,47 @@ class FbShopAPI {
     return shops;
   }
 
-
-
   Future<List<Shop>> getShopsCreatedByUsers() async {
     List<Shop> shops = [];
     await FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).get().then((QuerySnapshot<Map<String, dynamic>> value) {
-
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
-
         Shop shop = Shop.toModel(element.data());
-        if(shop.createdFrom == Shop.UN_AVAILABLE){
+        if (shop.createdFrom == Shop.UN_AVAILABLE) {
           shops.add(shop);
         }
-
       });
     });
 
     return shops;
   }
 
-  Future updateShop(Shop shop) {
+  Future updateShop(Shop shop) async{
+    // update all products
+    List<Product> products = [];
+    FbProductAPI fbProductAPI = FbProductAPI();
+
+    await FirebaseFirestore.instance.collection(Product.COLLECTION_NAME).where('shop.id', isEqualTo: shop.shopId).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+      value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
+        Product product = Product.toModel(element.data());
+        product.shop = shop;
+        fbProductAPI.updateProduct(product);
+      });
+    });
     return FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).doc(shop.shopId).update(Shop.toMap(shop));
   }
 
   Future deleteShop(Shop shop) async {
     return FirebaseFirestore.instance.collection(Shop.COLLECTION_NAME).doc(shop.shopId).delete();
   }
-
-
 }
 
 class FbContactUsAPI {
-
-
   Future<List<ContactUs>> getUnResolvedContactUsMessages() async {
     List<ContactUs> contactUsMessages = [];
     await FirebaseFirestore.instance.collection(ContactUs.COLLECTION_NAME).where('resolved', isEqualTo: false).limit(50).get().then((QuerySnapshot<Map<String, dynamic>> value) {
       value.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
-        element.data()["id"] = element.id;
         ContactUs contactUs = ContactUs.toModel(element.data());
+        contactUs.id = element.id;
         contactUsMessages.add(contactUs);
       });
     });
@@ -183,7 +188,6 @@ class FbContactUsAPI {
   Future updateContactUsMessages(ContactUs contactUs) {
     return FirebaseFirestore.instance.collection(ContactUs.COLLECTION_NAME).doc(contactUs.id).update(ContactUs.toMap(contactUs));
   }
-
 }
 
 class FbGlobalConfigAPI {
@@ -206,6 +210,7 @@ class FbGlobalConfigAPI {
           featuresConfig: featuresConfig,
           bankConfigs: bankConfigs,
           categories: categories,
+          ad: data[GlobalConfig.AD],
           firstModified: DateTime.parse(data[GlobalConfig.FIRST_MODIFIED]),
           lastModified: DateTime.parse(data[GlobalConfig.LAST_MODIFIED]));
 
@@ -213,10 +218,9 @@ class FbGlobalConfigAPI {
     });
   }
 
-  Future update(GlobalConfig globalConfig) async{
+  Future update(GlobalConfig globalConfig) async {
     return FirebaseFirestore.instance.collection(GlobalConfig.COLLECTION_NAME).doc(CONFIG_ID).update(GlobalConfig.toMap(globalConfig));
   }
-
 }
 
 class SyncServerAPI {
@@ -241,7 +245,7 @@ class SyncServerAPI {
     });
   }
 
-  Future<Map<String, dynamic>> getSystemStat(){
+  Future<Map<String, dynamic>> getSystemStat() {
     String getStatURL = "$url/server/system_info";
 
     return http.get(Uri.parse(getStatURL), headers: {"Content-Type": "application/json"}).then((http.Response response) {
@@ -259,22 +263,20 @@ class TsAPI {
   Future indexProduct(Product product) {
     String indexURL = "$url/index/product";
     dynamic body = Product.toMap(product);
-    return http.post(Uri.parse(indexURL), headers: {"Content-Type": "application/json"},body: jsonEncode(body)).then((http.Response response) {
+    return http.post(Uri.parse(indexURL), headers: {"Content-Type": "application/json"}, body: jsonEncode(body)).then((http.Response response) {
       return jsonDecode(response.body);
     }, onError: (err) {
       return {};
     });
   }
-
 
   Future indexShop(Shop shop) {
     String indexURL = "$url/index/shop";
     dynamic body = Shop.toMap(shop);
-    return http.post(Uri.parse(indexURL), headers: {"Content-Type": "application/json"},body: jsonEncode(body)).then((http.Response response) {
+    return http.post(Uri.parse(indexURL), headers: {"Content-Type": "application/json"}, body: jsonEncode(body)).then((http.Response response) {
       return jsonDecode(response.body);
     }, onError: (err) {
       return {};
     });
   }
-
 }

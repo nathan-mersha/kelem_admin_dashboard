@@ -273,17 +273,14 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       TextFormField(
                         style: TextStyle(fontSize: 14),
                         controller: _titleController,
-                        enabled: false,
                         decoration: InputDecoration(hintText: "title", labelText: "title"),
                         // The validator receives the text that the user has entered.
                       ),
                       TextFormField(
                         style: TextStyle(fontSize: 14),
                         minLines: 10,
-                          maxLines: 10,
-
+                        maxLines: 10,
                         controller: _bodyController,
-                        enabled: false,
                         decoration: InputDecoration(hintText: "body", labelText: "body"),
                         // The validator receives the text that the user has entered.
                       ),

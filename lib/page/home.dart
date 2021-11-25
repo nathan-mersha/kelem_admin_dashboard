@@ -44,17 +44,17 @@ class _HomePageState extends State<HomePage> {
       CHILD: ShopPage(),
     },
     {
-      NAME: "Shop created by users",
+      NAME: "Shop created by user",
       ICON_DATA: Icons.store,
       CHILD: ShopByUsersPage(),
     },
     {
-      NAME: "Sync report",
+      NAME: "Sync reports",
       ICON_DATA: Icons.sync_sharp,
       CHILD: SyncReportPage(),
     },
     {
-      NAME: "Messages",
+      NAME: "Contact Us Message",
       ICON_DATA: Icons.contactless_rounded,
       CHILD: ContactUsPage(),
     },
@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
       CHILD: UserPage(),
     },
     {
-      NAME: "Settings",
+      NAME: "Setting",
       ICON_DATA: Icons.settings_outlined,
       CHILD: SettingsPage(),
     },
@@ -92,6 +92,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         body: Container(
             color: Colors.black12.withOpacity(0.05),

@@ -531,7 +531,9 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
   }
 
   void onDeleteProduct(Product product) async {
-    await firebaseAPI.deleteProduct(product);
+    await firebaseAPI.createDeletedProduct(product);
+    await firebaseAPI.deleteTotalyProduct(product);
+
     setState(() {
       unApprovedProducts.removeWhere((Product element) => product.productId == element.productId);
       selectedProduct = unApprovedProducts.first;

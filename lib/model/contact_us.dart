@@ -39,7 +39,7 @@ class ContactUs {
 
   /// Converts Map to Model
   static ContactUs toModel(dynamic map) {
-    print("map ;: ${map.toString()}");
+
     return ContactUs(
         id: map[ID],
         from: map[FROM],

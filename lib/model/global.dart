@@ -9,6 +9,7 @@ class GlobalConfig {
   static const String FEATURES_CONFIG = "featuresConfig";
   static const String BANK_CONFIG = "bankConfig";
   static const String CATEGORIES = "categories";
+  static const String AD = "ad";
   static const String FIRST_MODIFIED = "firstModified";
   static const String LAST_MODIFIED = "lastModified";
 
@@ -18,6 +19,7 @@ class GlobalConfig {
   FeaturesConfig featuresConfig;
   List<BankConfig> bankConfigs;
   List<Category> categories;
+  List ad;
   DateTime firstModified;
   DateTime lastModified;
 
@@ -28,6 +30,7 @@ class GlobalConfig {
     required this.featuresConfig,
     required this.bankConfigs,
     required this.categories,
+    required this.ad,
     required this.firstModified,
     required this.lastModified,
   });
@@ -41,6 +44,7 @@ class GlobalConfig {
       FEATURES_CONFIG: FeaturesConfig.toMap(globalConfig.featuresConfig),
       BANK_CONFIG: BankConfig.toMapList(globalConfig.bankConfigs),
       CATEGORIES: Category.toMapList(globalConfig.categories),
+      AD: globalConfig.ad,
       FIRST_MODIFIED: globalConfig.firstModified.toString(),
       LAST_MODIFIED: globalConfig.lastModified.toString()
     };
@@ -55,6 +59,7 @@ class GlobalConfig {
         featuresConfig: FeaturesConfig.toModel(map[FEATURES_CONFIG]),
         bankConfigs: BankConfig.toModelList(map[BANK_CONFIG]),
         categories: Category.toModelList(map[CATEGORIES]),
+        ad: map[AD],
         firstModified: DateTime.parse(map[FIRST_MODIFIED]),
         lastModified: DateTime.parse(map[LAST_MODIFIED]));
   }

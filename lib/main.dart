@@ -23,6 +23,9 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    // todo : build command
+    // C:\Users\nathan\Documents\Software\flutter_windows_2.8.1-stable\flutter\bin\flutter.bat build web --web-renderer html --release
+
     var routes = RouteTo().routes;
 
     return FutureBuilder(

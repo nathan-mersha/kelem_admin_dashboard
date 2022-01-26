@@ -306,7 +306,12 @@ class _ProductApprovalPageState extends State<ProductApprovalPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Detail"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+              Text("Detail"),
+              SelectableText(selectedProduct.productId)
+            ],),
             SizedBox(
               height: 20,
             ),
